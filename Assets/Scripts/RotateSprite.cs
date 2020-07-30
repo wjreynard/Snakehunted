@@ -7,6 +7,12 @@ public class RotateSprite : MonoBehaviour
 {
     public GameObject targetObject;
 
+    private void Start()
+    {
+        //GetComponent<Renderer>().receiveShadows = true;
+        //GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+    }
+
     void Update()
     {
         RotateSpriteToCamera();
