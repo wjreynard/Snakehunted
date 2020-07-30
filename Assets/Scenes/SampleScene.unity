@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 94283790}
   - component: {fileID: 94283791}
   - component: {fileID: 94283792}
+  - component: {fileID: 94283793}
   m_Layer: 0
   m_Name: PlayerSprite
   m_TagString: Untagged
@@ -192,7 +193,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 306843548570cb24f93ad982665bed5a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e8a014a7bdefc2543a0fbb4d69b38987, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -215,7 +216,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5bd0f1f0d7b1847b3a82c8b8dcd794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetObject: {fileID: 963194225}
+  targetObject: {fileID: 2096776290}
+--- !u!95 &94283793
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94283789}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 03e2109326828374abcd51d795a1c88a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &327453888
 GameObject:
   m_ObjectHideFlags: 3
@@ -282,7 +302,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327453888}
-  m_LocalRotation: {x: 0.13505942, y: 8.719026e-16, z: -1.7869098e-17, w: 0.9908375}
+  m_LocalRotation: {x: 0.1350594, y: -0.00000001476463, z: 0.0000000020125421, w: 0.9908375}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -356,7 +376,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559423405}
-  m_LocalRotation: {x: 0.13505942, y: 8.719026e-16, z: -1.7869098e-17, w: 0.9908375}
+  m_LocalRotation: {x: 0.1350594, y: -0.00000001476463, z: 0.0000000020125421, w: 0.9908375}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -734,7 +754,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.13505943, y: 0.000000014764631, z: -0.0000000020125426, w: 0.9908375}
+  m_LocalRotation: {x: 0.1350594, y: -0.000000014764631, z: 0.0000000020125421, w: 0.9908375}
   m_LocalPosition: {x: 0, y: 5, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1199,9 +1219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00e3bc0902fbfc249815c894ba9bc787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 94283793}
   cameraTransform: {fileID: 963194228}
-  speed: 6
-  turnSmoothTime: 0.1
+  moveSpeed: 6
 --- !u!33 &1913172856
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1430,7 +1450,7 @@ MonoBehaviour:
   m_YAxis:
     Value: 0.5
     m_SpeedMode: 0
-    m_MaxSpeed: 4
+    m_MaxSpeed: 8
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
