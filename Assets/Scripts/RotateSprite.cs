@@ -16,6 +16,6 @@ public class RotateSprite : MonoBehaviour
     {
         Vector3 target = targetObject.transform.position;
         float angle = Mathf.Atan2(target.z, target.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, -angle + 90, 0);
+        transform.rotation = Quaternion.Euler(0, -angle + 90.0f, 0);
     }
 }

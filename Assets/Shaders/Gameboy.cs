@@ -15,7 +15,7 @@ public class Gameboy : MonoBehaviour
     private void OnEnable()
     {
         var camera = GetComponent<Camera>();
-        int height = 640;
+        int height = 320;
         int width = Mathf.RoundToInt(camera.aspect * height);
         _downscaledRenderTexture = new RenderTexture(width, height, 16);
         _downscaledRenderTexture.filterMode = FilterMode.Point;

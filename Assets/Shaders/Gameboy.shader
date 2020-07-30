@@ -62,6 +62,9 @@
                 float lightest = saturate(lumaTimesThree - 2.0);
                 color = lerp(color, _Lightest, lightest);
 
+                // invert colors
+                //color.rgb = 1 - color.rgb;
+
                 return color;
             }
             ENDCG
