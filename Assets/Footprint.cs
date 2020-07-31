@@ -5,7 +5,7 @@ using UnityEngine;
 public class Footprint : MonoBehaviour
 {
     int age = 0;
-    public int lifetime = 400;
+    public int lifetime = 200;
 
     private void Update()
     {
