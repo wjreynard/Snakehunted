@@ -33,10 +33,13 @@
                 float4 vertex : SV_POSITION;
             };
 
+            //the vertex shader function
             v2f vert (appdata v)
             {
                 v2f o;
+                //convert the vertex positions from object space to clip space so they can be rendered correctly
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                //apply the texture transforms to the UV coordinates and pass them to the v2f struct
                 o.uv = v.uv;
                 return o;
             }
