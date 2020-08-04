@@ -11,10 +11,10 @@ public class Player : MonoBehaviour
     public Animator animator;
     public Transform cameraTransform;
 
-    public float moveSpeed = 6.0f;
+    public float moveSpeed;
 
     int counter = 0;
-    int counterInterval = 80;
+    int counterInterval = 20;
     public GameObject footprint;
     public Transform FootprintSpawn;
 
@@ -22,12 +22,12 @@ public class Player : MonoBehaviour
 
 
     [Header("Stats")]
-    public float stat_hydration_level = 50;
+    public float stat_hydration_level;
 
     [Space(10)]
-    public float stat_water_level = 50;
-    public float stat_water_min = 0;
-    public float stat_water_max = 100;
+    public float stat_water_level;
+    public float stat_water_min;
+    public float stat_water_max;
 
     [Header("UI")]
     public Image ui_water_level;
