@@ -10,94 +10,56 @@ public class Player : MonoBehaviour
     private CharacterController controller;
     public Animator animator;
     public Transform cameraTransform;
-
     public float moveSpeed;
 
-    int counter = 0;
-    int counterInterval = 20;
+    [Header("Footprints")]
     public GameObject footprint;
     public Transform FootprintSpawn;
-
-    private bool bDrinking = false;
-
+    private int footprintCounter = 0;
+    private int footprintCounterInterval = 20;
 
     [Header("Stats")]
-    public float stat_hydration_level;
+    public float maxHealth;
+    public float maxThirst;
+    public float thirstRate;
+    private float health, thirst;
 
-    [Space(10)]
-    public float stat_water_level;
-    public float stat_water_min;
-    public float stat_water_max;
-
-    [Header("UI")]
-    public Image ui_water_level;
-
+    private bool bDead;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
     }
-    IEnumerator WaitCoroutine(float t)
+
+    private void Start()
     {
-        yield return new WaitForSeconds(t);
+        health = maxHealth;
+    }
+
+    private void Update()
+    {
+        // thirst increase
+        if (!bDead)
+        {
+            thirst += thirstRate * Time.deltaTime;
+        }
+
+        if (thirst >= maxThirst)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        bDead = true;
+        //Debug.Log("Player::Die()");
+
     }
 
     void FixedUpdate()
     {
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            moveSpeed = 1.0f;
-
-            if (stat_water_level <= 0)
-            {
-                Debug.Log("Water empty");
-                animator.SetBool("Drinking", false);
-                animator.SetBool("WaterEmpty", true);
-                bDrinking = false;
-            }
-            else
-            {
-                bDrinking = true;
-                animator.SetBool("Drinking", true);
-            }
-        }
-        else
-        {
-            bDrinking = false;
-            moveSpeed = 6.0f;
-            animator.SetBool("Drinking", false);
-        }
-        //animator.SetBool("WaterEmpty", false);
-
-        if (bDrinking)
-        {
-            HydratePlayer();
-        }
-
         MovePlayer();
-    }
-
-    void HydratePlayer()
-    {
-        //Debug.Log("Player::HydratePlayer()");
-
-        // decrease and increase movement speed by some curve
-        // ...
-
-        // change animation
-        animator.SetBool("Drinking", true);
-
-        // increase hydration level
-        stat_hydration_level += 0.2f;
-
-        // decrease water level
-        stat_water_level -= 0.1f;
-
-        // update ui
-        float fill = ExtensionMethods.LinearRemap(stat_water_level, stat_water_min, stat_water_max, 0, 1);
-        ui_water_level.fillAmount = fill;
-
     }
 
     void MovePlayer()
@@ -116,10 +78,10 @@ public class Player : MonoBehaviour
             controller.Move(moveDirection.normalized * moveSpeed * Time.deltaTime);
 
             // footprints
-            counter = (counter + 1) % counterInterval;
-            if (counter == counterInterval - 1)
+            footprintCounter = (footprintCounter + 1) % footprintCounterInterval;
+            if (footprintCounter == footprintCounterInterval - 1)
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(-0.185f, 0, 0));
-            else if (counter == (counterInterval / 2) - 1)
+            else if (footprintCounter == (footprintCounterInterval / 2) - 1)
             {
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(0.185f, 0, 0));
             }
