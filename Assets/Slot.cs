@@ -1,18 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Slot : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private GameObject player;
+    private Inventory inventory;
+
+    public int slotPosition;
+
+    private void Awake()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player");
+        inventory = player.GetComponent<Inventory>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (transform.childCount <= 0)
+        {
+            inventory.isFull[slotPosition] = false;
+        }
+    }
+
+    public void DropItem()
+    {
+        // destroy sprite
+        foreach (Transform child in transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
     }
 }

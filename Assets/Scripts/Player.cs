@@ -26,9 +26,13 @@ public class Player : MonoBehaviour
 
     private bool bDead;
 
+    [Space(10)]
+    private Inventory inventory;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        inventory = GetComponent<Inventory>();
     }
 
     private void Start()
@@ -48,6 +52,26 @@ public class Player : MonoBehaviour
         {
             Die();
         }
+
+        UseInventory();
+    }
+
+    private void UseInventory()
+    {
+        // key inputs
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            inventory.slots[0].GetComponent<Slot>().DropItem();
+        } 
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            inventory.slots[1].GetComponent<Slot>().DropItem();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            inventory.slots[2].GetComponent<Slot>().DropItem();
+        }
+
     }
 
     private void Die()
