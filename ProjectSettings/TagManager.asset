@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bottle
   - Berry
+  - Pickup
   layers:
   - Default
   - TransparentFX

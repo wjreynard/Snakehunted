@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public Animator animator;
     public Transform cameraTransform;
     public float moveSpeed;
+    public GameObject pickupMessage;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -60,6 +61,22 @@ public class Player : MonoBehaviour
             //inventory.slots[0].GetComponent<Slot>().DropItem();
             //GetComponent<BottleSpawn>().SpawnDroppedItem();
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //if (other.CompareTag("Pickup"))
+        //{
+        //    pickupMessage.SetActive(true);
+        //}
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        //if (other.CompareTag("Pickup"))
+        //{
+        //    pickupMessage.SetActive(false);
+        //}
     }
 
     private void UseInventory()

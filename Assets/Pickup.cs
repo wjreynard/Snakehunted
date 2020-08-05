@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Pickup : MonoBehaviour
 {
@@ -14,18 +16,20 @@ public class Pickup : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //Debug.Log("");
-        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space))
+        if (other.CompareTag("Player"))
         {
-            // find empty slot
-            for (int i = 0; i < inventory.slots.Length; i++)
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                if (inventory.isFull[i] == false)
+                // find empty slot
+                for (int i = 0; i < inventory.slots.Length; i++)
                 {
-                    inventory.isFull[i] = true;
-                    Instantiate(itemSprite, inventory.slots[i].transform, false);
-                    Destroy(gameObject);    // remove item from screen
-                    break;
+                    if (inventory.isFull[i] == false)
+                    {
+                        inventory.isFull[i] = true;
+                        Instantiate(itemSprite, inventory.slots[i].transform, false);
+                        Destroy(gameObject);    // remove item from screen
+                        break;
+                    }
                 }
             }
         }
