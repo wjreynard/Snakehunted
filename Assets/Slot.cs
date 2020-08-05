@@ -9,6 +9,7 @@ public class Slot : MonoBehaviour
     private Inventory inventory;
 
     public GameObject bottleObject;
+    public GameObject berryObject;
 
     public int slotPosition;
 
@@ -32,9 +33,14 @@ public class Slot : MonoBehaviour
         foreach (Transform child in transform)
         {
             // spawn item
+            // the inventory slot images (BottleImage, BerryImage) have tags that identify which item to spawn
             if (child.CompareTag("Bottle"))
             {
                 Instantiate(bottleObject, player.transform.position, Quaternion.identity);
+            }
+            else if (child.CompareTag("Berry"))
+            {
+                Instantiate(berryObject, player.transform.position, Quaternion.identity);
             }
 
 
