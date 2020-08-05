@@ -342,7 +342,7 @@ PrefabInstance:
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
@@ -416,7 +416,7 @@ PrefabInstance:
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
@@ -761,6 +761,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1101bea31c75a254c968d54880d0dcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emptyBottleObject: {fileID: 4135666932809291860, guid: a6881160fb903e848be0fecb6781368f,
+    type: 3}
   bottleObject: {fileID: 4135666932809291860, guid: 694d1ea49cd74ab48ab10e50f4350b04,
     type: 3}
   berryObject: {fileID: 6620700416530406069, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
@@ -814,7 +816,7 @@ PrefabInstance:
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.18
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}
@@ -883,7 +885,7 @@ PrefabInstance:
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
@@ -1458,7 +1460,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787651933}
-  m_LocalRotation: {x: 0.10379794, y: 0.00000000427836, z: -4.4649676e-10, w: 0.99459845}
+  m_LocalRotation: {x: 0.10379794, y: -0.00000000427836, z: 4.4649676e-10, w: 0.99459845}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3207,6 +3209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1101bea31c75a254c968d54880d0dcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emptyBottleObject: {fileID: 4135666932809291860, guid: a6881160fb903e848be0fecb6781368f,
+    type: 3}
   bottleObject: {fileID: 4135666932809291860, guid: 694d1ea49cd74ab48ab10e50f4350b04,
     type: 3}
   berryObject: {fileID: 6620700416530406069, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
@@ -3299,6 +3303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1101bea31c75a254c968d54880d0dcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emptyBottleObject: {fileID: 4135666932809291860, guid: a6881160fb903e848be0fecb6781368f,
+    type: 3}
   bottleObject: {fileID: 4135666932809291860, guid: 694d1ea49cd74ab48ab10e50f4350b04,
     type: 3}
   berryObject: {fileID: 6620700416530406069, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
@@ -8203,7 +8209,7 @@ PrefabInstance:
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.18
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}
@@ -8272,7 +8278,7 @@ PrefabInstance:
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
@@ -8439,7 +8445,6 @@ GameObject:
   - component: {fileID: 1913172856}
   - component: {fileID: 1913172858}
   - component: {fileID: 1913172859}
-  - component: {fileID: 1913172860}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8505,7 +8510,9 @@ MonoBehaviour:
   FootprintSpawn: {fileID: 1173761623}
   maxHealth: 100
   maxThirst: 150
+  midThirst: 100
   thirstRate: 0.65
+  hydrationRate: 0
   health: 0
   thirst: 0
 --- !u!33 &1913172856
@@ -8591,19 +8598,6 @@ MonoBehaviour:
   - {fileID: 1686554508}
   - {fileID: 1633473949}
   - {fileID: 351391831}
---- !u!114 &1913172860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1913172852}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78b3220319f407c4b896d4f6d17bcab5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 4135666932809291860, guid: 694d1ea49cd74ab48ab10e50f4350b04, type: 3}
 --- !u!4 &1986526652 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
@@ -9005,7 +8999,7 @@ PrefabInstance:
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135666932809291856, guid: 694d1ea49cd74ab48ab10e50f4350b04,
         type: 3}
@@ -9079,7 +9073,7 @@ PrefabInstance:
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.18
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6620700416530406065, guid: 5f97b04ae9c321b46af9526ec9ca35ec,
         type: 3}

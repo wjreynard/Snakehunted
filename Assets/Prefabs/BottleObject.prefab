@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4135666932796479476}
   m_Layer: 0
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Bottle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 95dedc39b058bca43b6f3e5ae6e3cc89, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 338716b83459de647a4e6ee9c65578bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 4135666932809291861}
   - component: {fileID: 4135666932809291857}
   m_Layer: 0
-  m_Name: Bottle
+  m_Name: BottleObject
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,6 +8,7 @@ public class Slot : MonoBehaviour
     private Player player;
     private Inventory inventory;
 
+    public GameObject emptyBottleObject;
     public GameObject bottleObject;
     public GameObject berryObject;
 
@@ -29,30 +30,37 @@ public class Slot : MonoBehaviour
 
     public void DropItem()
     {
-
         foreach (Transform child in transform)
         {
             // spawn item
             // the inventory slot images (BottleImage, BerryImage) have tags that identify which item to spawn
             if (child.CompareTag("Bottle"))
             {
-                Instantiate(bottleObject, player.transform.position, Quaternion.identity);
+                Bottle bottle = child.GetComponent<Bottle>();
+
+                if (bottle.level < 0)
+                {
+                    Instantiate(emptyBottleObject, player.transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(bottleObject, player.transform.position, Quaternion.identity);
+                }
+
             }
             else if (child.CompareTag("Berry"))
             {
                 Instantiate(berryObject, player.transform.position, Quaternion.identity);
             }
 
-
             // destroy sprite
             GameObject.Destroy(child.gameObject);
         }
-
     }
 
     public void UseItem()
     {
-        Debug.Log("Using item");
+        Debug.Log("Slot::UseItem()");
 
         foreach (Transform child in transform)
         {
@@ -64,7 +72,7 @@ public class Slot : MonoBehaviour
                 {
                     player.animator.SetTrigger("WaterEmpty");
                 }
-                else
+                else if (bottle.level > 0)
                 {
                     // decrease bottle level
                     bottle.level -= 0.1f;
@@ -72,9 +80,6 @@ public class Slot : MonoBehaviour
 
                     player.moveSpeed = 1.0f;
                     player.animator.SetBool("Drinking", true);
-
-                    //player.moveSpeed = 6.0f;
-                    //player.animator.SetBool("Drinking", false);
                 }
             }
             else if (child.CompareTag("Berry"))
@@ -82,5 +87,11 @@ public class Slot : MonoBehaviour
                 // use berry
             }
         }
+    }
+
+    public void StopUsingItem()
+    {
+        player.moveSpeed = 6.0f;
+        player.animator.SetBool("Drinking", false);
     }
 }
