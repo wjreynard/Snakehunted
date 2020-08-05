@@ -12,10 +12,10 @@ public class Pickup : MonoBehaviour
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         //Debug.Log("");
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space))
         {
             // find empty slot
             for (int i = 0; i < inventory.slots.Length; i++)

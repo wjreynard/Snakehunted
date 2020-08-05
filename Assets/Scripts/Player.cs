@@ -54,6 +54,12 @@ public class Player : MonoBehaviour
         }
 
         UseInventory();
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            //inventory.slots[0].GetComponent<Slot>().DropItem();
+            //GetComponent<BottleSpawn>().SpawnDroppedItem();
+        }
     }
 
     private void UseInventory()

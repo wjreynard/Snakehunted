@@ -8,6 +8,8 @@ public class Slot : MonoBehaviour
     private GameObject player;
     private Inventory inventory;
 
+    public GameObject bottleObject;
+
     public int slotPosition;
 
     private void Awake()
@@ -26,9 +28,17 @@ public class Slot : MonoBehaviour
 
     public void DropItem()
     {
-        // destroy sprite
+
         foreach (Transform child in transform)
         {
+            // spawn item
+            if (child.CompareTag("Bottle"))
+            {
+                Instantiate(bottleObject, player.transform.position, Quaternion.identity);
+            }
+
+
+            // destroy sprite
             GameObject.Destroy(child.gameObject);
         }
 
