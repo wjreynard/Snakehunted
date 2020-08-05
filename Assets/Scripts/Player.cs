@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +12,13 @@ public class Player : MonoBehaviour
     public Animator animator;
     public Transform cameraTransform;
     public float moveSpeed;
+    private bool bDead;
+
+    [Header("Inventory")]
+    private int selectedSlot = 0;
+    public GameObject selectedSlotHighlight;
     public GameObject pickupMessage;
+    private Inventory inventory;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -19,16 +26,14 @@ public class Player : MonoBehaviour
     private int footprintCounter = 0;
     private int footprintCounterInterval = 20;
 
+    [Space(10)]
     [Header("Stats")]
     public float maxHealth;
     public float maxThirst;
     public float thirstRate;
     private float health, thirst;
 
-    private bool bDead;
 
-    [Space(10)]
-    private Inventory inventory;
 
     private void Awake()
     {
@@ -60,6 +65,31 @@ public class Player : MonoBehaviour
         {
             //inventory.slots[0].GetComponent<Slot>().DropItem();
             //GetComponent<BottleSpawn>().SpawnDroppedItem();
+        }
+
+
+
+        UpdateInventorySlot(Input.mouseScrollDelta.y);
+    }
+
+    void UpdateInventorySlot(float delta)
+    {
+
+        if (delta > 0 || delta < 0)
+        {
+            if (delta > 0)
+            {
+                selectedSlot = (selectedSlot + 1) % inventory.slots.Length;
+            }
+            else if (delta < 0)
+            {
+                selectedSlot = (selectedSlot - 1) % inventory.slots.Length;
+                if (selectedSlot <= -1)
+                    selectedSlot = inventory.slots.Length - 1;
+            }
+
+            float x = Mathf.Lerp(-50.0f, 50.0f, (float) selectedSlot / (float) (inventory.slots.Length - 1));
+            selectedSlotHighlight.GetComponent<RectTransform>().anchoredPosition = new Vector3(x, -100.0f, 0);
         }
     }
 
