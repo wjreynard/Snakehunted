@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public class Slot : MonoBehaviour
 {
-    private GameObject player;
+    private Player player;
     private Inventory inventory;
 
     public GameObject bottleObject;
@@ -15,7 +15,7 @@ public class Slot : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         inventory = player.GetComponent<Inventory>();
     }
 
@@ -48,5 +48,39 @@ public class Slot : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
+    }
+
+    public void UseItem()
+    {
+        Debug.Log("Using item");
+
+        foreach (Transform child in transform)
+        {
+            if (child.CompareTag("Bottle"))
+            {
+                Bottle bottle = child.GetComponent<Bottle>();
+
+                if (bottle.level <= 0)
+                {
+                    player.animator.SetTrigger("WaterEmpty");
+                }
+                else
+                {
+                    // decrease bottle level
+                    bottle.level -= 0.1f;
+                    player.thirst -= player.hydrationRate;
+
+                    player.moveSpeed = 1.0f;
+                    player.animator.SetBool("Drinking", true);
+
+                    //player.moveSpeed = 6.0f;
+                    //player.animator.SetBool("Drinking", false);
+                }
+            }
+            else if (child.CompareTag("Berry"))
+            {
+                // use berry
+            }
+        }
     }
 }

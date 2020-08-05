@@ -30,8 +30,10 @@ public class Player : MonoBehaviour
     [Header("Stats")]
     public float maxHealth;
     public float maxThirst;
+    public float midThirst;
     public float thirstRate;
-    private float health, thirst;
+    public float hydrationRate;
+    public float health, thirst;
 
 
 
@@ -39,14 +41,20 @@ public class Player : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         inventory = GetComponent<Inventory>();
-    }
 
-    private void Start()
-    {
         health = maxHealth;
+        thirst = 0;
     }
 
     private void Update()
+    {
+        UpdateStats();
+
+        UpdateInventorySlot(Input.mouseScrollDelta.y);
+        UseInventory();
+    }
+
+    private void UpdateStats()
     {
         // thirst increase
         if (!bDead)
@@ -54,22 +62,17 @@ public class Player : MonoBehaviour
             thirst += thirstRate * Time.deltaTime;
         }
 
+        if (thirst >= midThirst)
+        {
+            // sweatparticles = more;
+            moveSpeed /= 2;
+            footprintCounterInterval /= 2;
+        }
+
         if (thirst >= maxThirst)
         {
-            Die();
+            PlayerReset();
         }
-
-        UseInventory();
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            //inventory.slots[0].GetComponent<Slot>().DropItem();
-            //GetComponent<BottleSpawn>().SpawnDroppedItem();
-        }
-
-
-
-        UpdateInventorySlot(Input.mouseScrollDelta.y);
     }
 
     void UpdateInventorySlot(float delta)
@@ -93,41 +96,23 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //if (other.CompareTag("Pickup"))
-        //{
-        //    pickupMessage.SetActive(true);
-        //}
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        //if (other.CompareTag("Pickup"))
-        //{
-        //    pickupMessage.SetActive(false);
-        //}
-    }
-
     private void UseInventory()
     {
-        // key inputs
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKey(KeyCode.E))
         {
-            inventory.slots[0].GetComponent<Slot>().DropItem();
-        } 
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            inventory.slots[1].GetComponent<Slot>().DropItem();
+            if (inventory.isFull[selectedSlot])
+            {
+                inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.F))
         {
-            inventory.slots[2].GetComponent<Slot>().DropItem();
+            inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
         }
 
     }
 
-    private void Die()
+    private void PlayerReset()
     {
         bDead = true;
         //Debug.Log("Player::Die()");
