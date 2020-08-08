@@ -71,6 +71,7 @@ public class Slot : MonoBehaviour
                 if (bottle.level <= 0)
                 {
                     player.animator.SetTrigger("WaterEmpty");
+                    StopUsingItem();
                 }
                 else if (bottle.level > 0)
                 {

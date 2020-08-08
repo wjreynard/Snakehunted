@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public GameObject selectedSlotHighlight;
     public GameObject pickupMessage;
     private Inventory inventory;
+    public bool bIsPickingUp = false;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -81,36 +82,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("Pickup"))
-    //    {
-    //        bTriggerStay = true;
-
-    //        foreach (Transform child in other.transform)
-    //        {
-    //            if (child.CompareTag("Bottle"))
-    //            {
-    //                itemSprite = bottleSprite;
-    //            }
-    //            else if (child.CompareTag("Berry"))
-    //            {
-    //                itemSprite = berrySprite;
-    //            }
-    //        }
-
-    //    }
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.CompareTag("Pickup"))
-    //    {
-    //        bTriggerStay = false;
-    //        itemSprite = null;
-    //    }
-    //}
-
     void UpdateInventorySlot(float delta)
     {
 
@@ -134,39 +105,21 @@ public class Player : MonoBehaviour
 
     private void UseInventory()
     {
-        //if (Input.GetKeyDown(KeyCode.E) && bTriggerStay)
-        //{
-        //    // pickup item
-        //    if (itemSprite != null)
-        //    {
-        //        for (int i = 0; i < inventory.slots.Length; i++)
-        //        {
-        //            if (inventory.isFull[i] == false)
-        //            {
-        //                inventory.isFull[i] = true;
-        //                Instantiate(itemSprite, inventory.slots[i].transform, false);
-        //                //Destroy(gameObject);    // remove item from screen
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+        bIsPickingUp = (Input.GetKeyDown(KeyCode.E));
 
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.R) && inventory.isFull[selectedSlot])
         {
-            if (inventory.isFull[selectedSlot])
-            {
-                inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
-            }
+            inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
         }
-        else if (Input.GetKeyDown(KeyCode.F))
+
+        if (Input.GetKeyDown(KeyCode.F))
         {
             inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
         }
 
 
         // if E released
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.R))
         {
             if (inventory.isFull[selectedSlot])
             {
@@ -179,7 +132,7 @@ public class Player : MonoBehaviour
     private void PlayerReset()
     {
         bDead = true;
-        //Debug.Log("Player::Die()");
+        Debug.Log("Player::PlayerReset()");
 
     }
 

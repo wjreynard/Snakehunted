@@ -2,6 +2,9 @@
 
 public class Pickup : MonoBehaviour
 {
+    public int index;
+
+    [Space(10)]
     private Inventory inventory;
     public GameObject itemSprite;
 
@@ -14,11 +17,14 @@ public class Pickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PickupItem();
+            if (other.GetComponent<Player>().bIsPickingUp)
+            {
+                PickupItem();
+            }
         }
     }
 
-private void PickupItem()
+    private void PickupItem()
     {
         // find empty slot
         for (int i = 0; i < inventory.slots.Length; i++)
