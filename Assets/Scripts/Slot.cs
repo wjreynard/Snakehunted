@@ -71,6 +71,11 @@ public class Slot : MonoBehaviour
                 if (bottle.level <= 0)
                 {
                     player.animator.SetTrigger("WaterEmpty");
+<<<<<<< Updated upstream
+=======
+                    //Wait();
+                    StopUsingItem();
+>>>>>>> Stashed changes
                 }
                 else if (bottle.level > 0)
                 {
@@ -89,9 +94,16 @@ public class Slot : MonoBehaviour
         }
     }
 
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(1.0f);
+    }
+
     public void StopUsingItem()
     {
         player.moveSpeed = 6.0f;
         player.animator.SetBool("Drinking", false);
+        //player.animator.ResetTrigger("WaterEmpty");
+        //player.animator.SetBool("WaterEmpty", false);
     }
 }

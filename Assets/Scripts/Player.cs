@@ -154,6 +154,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKey(KeyCode.E))
         {
+<<<<<<< Updated upstream
             if (inventory.isFull[selectedSlot])
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
@@ -167,6 +168,13 @@ public class Player : MonoBehaviour
 
         // if E released
         if (Input.GetKeyUp(KeyCode.E))
+=======
+            inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
+        } else if (Input.GetKeyDown(KeyCode.F))
+        {
+            inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
+        } else if (Input.GetKeyUp(KeyCode.R))
+>>>>>>> Stashed changes
         {
             if (inventory.isFull[selectedSlot])
             {
