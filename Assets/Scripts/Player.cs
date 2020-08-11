@@ -155,24 +155,22 @@ public class Player : MonoBehaviour
 
         bPickingUpItem = Input.GetKey(KeyCode.E);
 
-        if (Input.GetKey(KeyCode.R))
+        if (inventory.isFull[selectedSlot])
         {
-            if (inventory.isFull[selectedSlot])
+            if (Input.GetKey(KeyCode.R))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
-        }
-        else if (Input.GetKeyUp(KeyCode.R))
-        {
-            if (inventory.isFull[selectedSlot])
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
+            }
+            else if (Input.GetKeyUp(KeyCode.R))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
             }
         }
+
 
     }
 

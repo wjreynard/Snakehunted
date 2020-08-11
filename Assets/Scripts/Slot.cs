@@ -70,7 +70,7 @@ public class Slot : MonoBehaviour
 
                 if (bottle.level <= 0)
                 {
-                    player.animator.SetTrigger("WaterEmpty");
+                    player.animator.SetBool("WaterEmpty", true);
                 }
                 else if (bottle.level > 0)
                 {
@@ -93,5 +93,6 @@ public class Slot : MonoBehaviour
     {
         player.moveSpeed = 6.0f;
         player.animator.SetBool("Drinking", false);
+        player.animator.SetBool("WaterEmpty", false);
     }
 }
