@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public GameObject selectedSlotHighlight;
     public GameObject pickupMessage;
     private Inventory inventory;
+    public bool bPickingUpItem;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -152,9 +153,10 @@ public class Player : MonoBehaviour
         //    }
         //}
 
-        if (Input.GetKey(KeyCode.E))
+        bPickingUpItem = Input.GetKey(KeyCode.E);
+
+        if (Input.GetKey(KeyCode.R))
         {
-<<<<<<< Updated upstream
             if (inventory.isFull[selectedSlot])
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
@@ -164,17 +166,7 @@ public class Player : MonoBehaviour
         {
             inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
         }
-
-
-        // if E released
-        if (Input.GetKeyUp(KeyCode.E))
-=======
-            inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
-        } else if (Input.GetKeyDown(KeyCode.F))
-        {
-            inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
-        } else if (Input.GetKeyUp(KeyCode.R))
->>>>>>> Stashed changes
+        else if (Input.GetKeyUp(KeyCode.R))
         {
             if (inventory.isFull[selectedSlot])
             {

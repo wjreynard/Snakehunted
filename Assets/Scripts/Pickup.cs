@@ -14,7 +14,8 @@ public class Pickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PickupItem();
+            if (other.GetComponent<Player>().bPickingUpItem)
+                PickupItem();
         }
     }
 
