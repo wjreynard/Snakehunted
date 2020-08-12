@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
     public float hydrationRate;
     public float health, thirst;
     public ParticleSystem sweatParticles;
+    public Image thirstImage;
 
 
     private void Awake()
@@ -78,14 +79,19 @@ public class Player : MonoBehaviour
     {
         thirst += thirstRate * Time.deltaTime;
 
+        if (thirst < 0) thirst = 0.0f;
+
         float newEmissionRate = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 0.0f, 10.0f);
         ParticleSystem.EmissionModule em = sweatParticles.emission;
         em.rateOverTime = newEmissionRate;
 
+        float fillAmount = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 1.0f, 0.0f);
+        thirstImage.fillAmount = fillAmount;
+
         if (thirst >= midThirst)
         {
             moveSpeed = 3.0f;
-            footprintCounterInterval = 10;
+            footprintCounterInterval = 20;
         }
         else if (thirst < midThirst)
         {

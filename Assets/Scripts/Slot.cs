@@ -106,10 +106,6 @@ public class Slot : MonoBehaviour
                     {
                         player.thirst -= player.hydrationRate * Time.deltaTime;
                     }
-                    //else if (player.thirst <= 0)
-                    //{
-                    //    player.thirst = 0.0f;
-                    //}
 
                     player.animator.SetBool("Drinking", true);
                 }
