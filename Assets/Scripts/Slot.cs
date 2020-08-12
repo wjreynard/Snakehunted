@@ -38,11 +38,11 @@ public class Slot : MonoBehaviour
             {
                 Bottle bottle = child.GetComponent<Bottle>();
 
-                if (bottle.level < 0)
+                if (bottle.level <= 0.0f)
                 {
                     Instantiate(emptyBottleObject, player.transform.position, Quaternion.identity);
                 }
-                else
+                else if (bottle.level > 0.0f)
                 {
                     Instantiate(bottleObject, player.transform.position, Quaternion.identity);
                 }
@@ -68,17 +68,49 @@ public class Slot : MonoBehaviour
             {
                 Bottle bottle = child.GetComponent<Bottle>();
 
-                if (bottle.level <= 0)
+                if (bottle.level < bottle.maxLevel && player.bCouldRefill)
                 {
-                    player.animator.SetBool("WaterEmpty", true);
+                    Debug.Log("refill water");
+
+                    player.moveSpeed = 0.0f;
+
+                    player.animator.SetBool("Refilling", true);
+                    bottle.level += bottle.fillRate * Time.deltaTime;
+
+                    if (bottle.level >= bottle.maxLevel)
+                    {
+                        bottle.level = bottle.maxLevel;
+                        player.animator.SetBool("Refilling", false);
+                        player.moveSpeed = 6.0f;
+                        return;
+                    }
                 }
-                else if (bottle.level > 0)
+                else if (bottle.level <= 0 && !player.bCouldRefill)
                 {
-                    // decrease bottle level
-                    bottle.level -= 0.1f;
-                    player.thirst -= player.hydrationRate;
+                    Debug.Log("empty water");
 
                     player.moveSpeed = 1.0f;
+
+                    bottle.level = 0.0f;
+                    player.animator.SetBool("WaterEmpty", true);
+                }
+                else if (bottle.level > 0 && !player.bCouldRefill)
+                {
+                    Debug.Log("drink water");
+
+                    player.moveSpeed = 1.0f;
+
+                    bottle.level -= bottle.drainRate * Time.deltaTime;
+
+                    if (player.thirst > 0)
+                    {
+                        player.thirst -= player.hydrationRate * Time.deltaTime;
+                    }
+                    //else if (player.thirst <= 0)
+                    //{
+                    //    player.thirst = 0.0f;
+                    //}
+
                     player.animator.SetBool("Drinking", true);
                 }
             }
@@ -94,5 +126,6 @@ public class Slot : MonoBehaviour
         player.moveSpeed = 6.0f;
         player.animator.SetBool("Drinking", false);
         player.animator.SetBool("WaterEmpty", false);
+        player.animator.SetBool("Refilling", false);
     }
 }

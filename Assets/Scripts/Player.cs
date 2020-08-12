@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public GameObject pickupMessage;
     private Inventory inventory;
     public bool bPickingUpItem;
+    public bool bCouldRefill;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -35,13 +36,14 @@ public class Player : MonoBehaviour
     public float thirstRate;
     public float hydrationRate;
     public float health, thirst;
-
+    public ParticleSystem sweatParticles;
 
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         inventory = GetComponent<Inventory>();
+        
 
         health = maxHealth;
         thirst = 0;
@@ -51,70 +53,65 @@ public class Player : MonoBehaviour
     {
         UpdateStats();
 
-        UpdateInventorySlot(Input.mouseScrollDelta.y);
+        SelectInventorySlot(Input.mouseScrollDelta.y);
         UseInventory();
     }
 
     private void UpdateStats()
     {
-        // thirst increase
         if (!bDead)
         {
-            thirst += thirstRate * Time.deltaTime;
-
-            if (thirst >= midThirst)
-            {
-                // sweatparticles = more;
-                moveSpeed = 3.0f;
-                footprintCounterInterval = 10;
-            }
-            else if (thirst < midThirst)
-            {
-                // sweatparticles = less;
-                moveSpeed = 6.0f;
-                footprintCounterInterval = 20;
-            }
+            ManageThirst();
         }
 
         if (thirst >= maxThirst)
         {
-            PlayerReset();
+            bDead = true;
+
+            // breathless particles
+            // collapse animation
+            // fade
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("Pickup"))
-    //    {
-    //        bTriggerStay = true;
-
-    //        foreach (Transform child in other.transform)
-    //        {
-    //            if (child.CompareTag("Bottle"))
-    //            {
-    //                itemSprite = bottleSprite;
-    //            }
-    //            else if (child.CompareTag("Berry"))
-    //            {
-    //                itemSprite = berrySprite;
-    //            }
-    //        }
-
-    //    }
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.CompareTag("Pickup"))
-    //    {
-    //        bTriggerStay = false;
-    //        itemSprite = null;
-    //    }
-    //}
-
-    void UpdateInventorySlot(float delta)
+    private void ManageThirst()
     {
+        thirst += thirstRate * Time.deltaTime;
 
+        float newEmissionRate = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 0.0f, 10.0f);
+        ParticleSystem.EmissionModule em = sweatParticles.emission;
+        em.rateOverTime = newEmissionRate;
+
+        if (thirst >= midThirst)
+        {
+            moveSpeed = 3.0f;
+            footprintCounterInterval = 10;
+        }
+        else if (thirst < midThirst)
+        {
+            moveSpeed = 6.0f;
+            footprintCounterInterval = 20;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Pool"))
+        {
+            bCouldRefill = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Pool"))
+        {
+            bCouldRefill = false;
+        }
+    }
+
+    void SelectInventorySlot(float delta)
+    {
         if (delta > 0 || delta < 0)
         {
             if (delta > 0)
@@ -135,24 +132,6 @@ public class Player : MonoBehaviour
 
     private void UseInventory()
     {
-        //if (Input.GetKeyDown(KeyCode.E) && bTriggerStay)
-        //{
-        //    // pickup item
-        //    if (itemSprite != null)
-        //    {
-        //        for (int i = 0; i < inventory.slots.Length; i++)
-        //        {
-        //            if (inventory.isFull[i] == false)
-        //            {
-        //                inventory.isFull[i] = true;
-        //                Instantiate(itemSprite, inventory.slots[i].transform, false);
-        //                //Destroy(gameObject);    // remove item from screen
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
-
         bPickingUpItem = Input.GetKey(KeyCode.E);
 
         if (inventory.isFull[selectedSlot])
@@ -170,15 +149,6 @@ public class Player : MonoBehaviour
                 inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
             }
         }
-
-
-    }
-
-    private void PlayerReset()
-    {
-        bDead = true;
-        //Debug.Log("Player::Die()");
-
     }
 
     void FixedUpdate()

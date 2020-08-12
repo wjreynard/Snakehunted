@@ -87,6 +87,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dad61b81286cd744bbcf2f9ded69a6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 5
+  level: 4
+  maxLevel: 4
+  fillRate: 0.8
+  drainRate: 0.4
   emptySprite: {fileID: 21300000, guid: d35a42019308b3b45b915546d12dd704, type: 3}
   fullSprite: {fileID: 21300000, guid: 95dedc39b058bca43b6f3e5ae6e3cc89, type: 3}
