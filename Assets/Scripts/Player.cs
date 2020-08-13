@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     [Header("Inventory")]
     private int selectedSlot = 0;
     public GameObject selectedSlotHighlight;
-    public GameObject pickupMessage;
+    //public GameObject pickupMessage;
     private Inventory inventory;
     public bool bPickingUpItem;
     public bool bCouldRefill;
@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void SelectInventorySlot(float delta)
+    private void SelectInventorySlot(float delta)
     {
         if (delta > 0 || delta < 0)
         {
@@ -131,8 +131,9 @@ public class Player : MonoBehaviour
                     selectedSlot = inventory.slots.Length - 1;
             }
 
-            float x = Mathf.Lerp(-50.0f, 50.0f, (float) selectedSlot / (float) (inventory.slots.Length - 1));
-            selectedSlotHighlight.GetComponent<RectTransform>().anchoredPosition = new Vector3(x, -100.0f, 0);
+            float x = Mathf.Lerp(-60.0f, 60.0f, (float) selectedSlot / (float) (inventory.slots.Length - 1));
+            float y = selectedSlotHighlight.GetComponent<RectTransform>().anchoredPosition.y;
+            selectedSlotHighlight.GetComponent<RectTransform>().anchoredPosition = new Vector3(x, y, 0);
         }
     }
 
