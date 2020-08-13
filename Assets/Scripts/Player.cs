@@ -154,7 +154,7 @@ public class Player : MonoBehaviour
 
         if (inventory.isFull[selectedSlot])
         {
-            if (Input.GetKey(KeyCode.R))
+            if (Input.GetKey(KeyCode.E))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
             }
@@ -162,7 +162,7 @@ public class Player : MonoBehaviour
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
             }
-            else if (Input.GetKeyUp(KeyCode.R))
+            else if (Input.GetKeyUp(KeyCode.E))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
             }
@@ -203,6 +203,6 @@ public class Player : MonoBehaviour
 
     void SpawnDecal(GameObject prefab, Transform spawn, Vector3 offset)
     {
-        Instantiate(prefab, spawn.position + offset, Quaternion.identity);
+        Instantiate(prefab, spawn.position + offset, Quaternion.Euler(0, animator.gameObject.transform.rotation.y, 0));
     }
 }

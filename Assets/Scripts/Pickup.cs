@@ -15,7 +15,10 @@ public class Pickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (other.GetComponent<Player>().bPickingUpItem)
+            {
                 PickupItem();
+                other.GetComponent<Player>().pickupText.SetActive(false);
+            }
         }
     }
 
