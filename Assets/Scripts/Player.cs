@@ -17,10 +17,11 @@ public class Player : MonoBehaviour
     [Header("Inventory")]
     private int selectedSlot = 0;
     public GameObject selectedSlotHighlight;
-    //public GameObject pickupMessage;
     private Inventory inventory;
     public bool bPickingUpItem;
     public bool bCouldRefill;
+    public GameObject pickupText;
+    public GameObject refillText;
 
     [Header("Footprints")]
     public GameObject footprint;
@@ -105,6 +106,11 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Pool"))
         {
             bCouldRefill = true;
+            refillText.SetActive(true);
+        }
+        else if (other.CompareTag("Pickup"))
+        {
+            pickupText.SetActive(true);
         }
     }
 
@@ -113,6 +119,11 @@ public class Player : MonoBehaviour
         if (other.CompareTag("Pool"))
         {
             bCouldRefill = false;
+            refillText.SetActive(false);
+        }
+        else if (other.CompareTag("Pickup"))
+        {
+            pickupText.SetActive(false);
         }
     }
 
