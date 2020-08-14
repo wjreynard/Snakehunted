@@ -21,9 +21,10 @@ public class Player : MonoBehaviour
     private bool bAlreadyMoved = false;
     public CinemachineBrain cinemachineBrain;
     public CinemachineFreeLook cinemachineFreeLook;
-    public ObjectManager objectManager;
+    //public ObjectManager objectManager;
     public LoadScene gameManager;
     public GameObject resetPanel;
+    public LightBob lightBob;
 
     [Header("Effects")]
     public ParticleSystem sweatParticles;
@@ -100,21 +101,26 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(t);
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
+    public IEnumerator ResetGame()
+    {
+        yield return new WaitForSeconds(5.0f);
+        gameManager.LoadByIndex(0);
+    }
 
     private void PlayerDeath()
     {
         Debug.Log("player dead");
 
+        // freeze player
         bDead = true;
         moveSpeed = 0.0f;
         bCanMove = false;
 
-        // disable all animations
+        // disable all animations, particles, prompts
         animator.SetFloat("Velocity", 0.0f);
         animator.SetBool("Drinking", false);
         animator.SetBool("WaterEmpty", false);
         animator.SetBool("Refilling", false);
-
 
         refillText.SetActive(false);
         pickupText.SetActive(false);
@@ -124,21 +130,19 @@ public class Player : MonoBehaviour
         sweatParticles.Stop();
         snowParticles.Pause();
 
+        lightBob.period = 0;
+
         // change sprite
         animator.speed = 1.0f;
         animator.SetBool("Dead", true);
 
         // zoom camera in
-        StartCoroutine(FadeFOV(cinemachineFreeLook, 4.0f, 35.0f));
+        StartCoroutine(FadeFOV(cinemachineFreeLook, 2.0f, 35.0f));
 
         // increase volume of breathing
         // decrease volume of everything else
-        StartCoroutine(WaitForTime(5.0f));
-        resetPanel.SetActive(true);
 
-        //playerCanvas.setActive(false);
-        //objectManager.DisableObjects();
-        //gameManager.LoadByIndex(0);
+        StartCoroutine(ResetGame());
     }
 
     private void UpdateStats()
