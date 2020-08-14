@@ -81,6 +81,13 @@ public class Player : MonoBehaviour
             StartCoroutine(FadeFOV(cinemachineFreeLook, 4.0f, 45.0f));
             bAlreadyMoved = true;
         }
+
+        if (bCanMove)
+        {
+            UpdateStats();
+            SelectInventorySlot(-Input.mouseScrollDelta.y);
+            UseInventory();
+        }
     }
 
     void FixedUpdate()
@@ -88,12 +95,8 @@ public class Player : MonoBehaviour
         if (bCanMove)
         {
             MovePlayer();
-            UpdateStats();
-            SelectInventorySlot(-Input.mouseScrollDelta.y);
-            UseInventory();
         }
     }
-
 
     public IEnumerator WaitForTime(float t)
     {
