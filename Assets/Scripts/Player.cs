@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,10 +13,23 @@ public class Player : MonoBehaviour
     private CharacterController controller;
     public Animator animator;
     public Transform cameraTransform;
+    public SpriteRenderer playerSprite;
+    public Sprite playerFrozenSprite;
     public float moveSpeed;
     private bool bDead;
-    public bool bCanMove;
-    public CinemachineBrain cameraMovement;
+    public bool bCanMove = false;
+    private bool bAlreadyMoved = false;
+    public CinemachineBrain cinemachineBrain;
+    public CinemachineFreeLook cinemachineFreeLook;
+    public ObjectManager objectManager;
+    public LoadScene gameManager;
+    public GameObject resetPanel;
+
+    [Header("Effects")]
+    public ParticleSystem sweatParticles;
+    public ParticleSystem breathParticlesLess;
+    public ParticleSystem breathParticlesMore;
+    public ParticleSystem snowParticles;
 
     [Header("Inventory")]
     private int selectedSlot = 0;
@@ -30,7 +44,7 @@ public class Player : MonoBehaviour
     public GameObject footprint;
     public Transform FootprintSpawn;
     private int footprintCounter = 0;
-    private int footprintCounterInterval = 20;
+    private int footprintCounterInterval = 50;
 
     [Space(10)]
     [Header("Stats")]
@@ -40,8 +54,9 @@ public class Player : MonoBehaviour
     public float thirstRate;
     public float hydrationRate;
     public float health, thirst;
-    public ParticleSystem sweatParticles;
-    public Image thirstImage;
+    public Image thirstBar;
+    private int flashCounter = 0;
+    private int flashCounterInterval = 10;
 
 
     private void Awake()
@@ -49,7 +64,7 @@ public class Player : MonoBehaviour
         controller = GetComponent<CharacterController>();
         inventory = GetComponent<Inventory>();
 
-        cameraMovement.enabled = false;
+        cinemachineBrain.enabled = false;
 
         health = maxHealth;
         thirst = 0;
@@ -57,14 +72,13 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        cameraMovement.enabled = bCanMove;
+        cinemachineBrain.enabled = bCanMove;
 
-        if (bCanMove)
+        // triggers once when player movement is enabled
+        if (bCanMove && !bAlreadyMoved)
         {
-            UpdateStats();
-
-            SelectInventorySlot(Input.mouseScrollDelta.y);
-            UseInventory();
+            StartCoroutine(FadeFOV(cinemachineFreeLook, 4.0f, 45.0f));
+            bAlreadyMoved = true;
         }
     }
 
@@ -73,9 +87,59 @@ public class Player : MonoBehaviour
         if (bCanMove)
         {
             MovePlayer();
+            UpdateStats();
+            SelectInventorySlot(-Input.mouseScrollDelta.y);
+            UseInventory();
         }
     }
 
+
+    public IEnumerator WaitForTime(float t)
+    {
+        Debug.Log("Started Coroutine at timestamp : " + Time.time);
+        yield return new WaitForSeconds(t);
+        Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+    }
+
+    private void PlayerDeath()
+    {
+        Debug.Log("player dead");
+
+        bDead = true;
+        moveSpeed = 0.0f;
+        bCanMove = false;
+
+        // disable all animations
+        animator.SetFloat("Velocity", 0.0f);
+        animator.SetBool("Drinking", false);
+        animator.SetBool("WaterEmpty", false);
+        animator.SetBool("Refilling", false);
+
+
+        refillText.SetActive(false);
+        pickupText.SetActive(false);
+
+        breathParticlesLess.Stop();
+        breathParticlesMore.Stop();
+        sweatParticles.Stop();
+        snowParticles.Pause();
+
+        // change sprite
+        animator.speed = 1.0f;
+        animator.SetBool("Dead", true);
+
+        // zoom camera in
+        StartCoroutine(FadeFOV(cinemachineFreeLook, 4.0f, 35.0f));
+
+        // increase volume of breathing
+        // decrease volume of everything else
+        StartCoroutine(WaitForTime(5.0f));
+        resetPanel.SetActive(true);
+
+        //playerCanvas.setActive(false);
+        //objectManager.DisableObjects();
+        //gameManager.LoadByIndex(0);
+    }
 
     private void UpdateStats()
     {
@@ -86,12 +150,26 @@ public class Player : MonoBehaviour
 
         if (thirst >= maxThirst)
         {
-            bDead = true;
-
-            // breathless particles
-            // collapse animation
-            // fade
+            PlayerDeath();
         }
+    }
+
+    public static IEnumerator FadeFOV(CinemachineFreeLook cam, float duration, float targetFOV)
+    {
+        Debug.Log("FadeFOV()");
+
+        cam.m_CommonLens = true;
+
+        float currentTime = 0;
+        float start = cam.m_Lens.FieldOfView;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            cam.m_Lens.FieldOfView = Mathf.Lerp(start, targetFOV, currentTime / duration);
+            yield return null;
+        }
+        yield break;
     }
 
     private void ManageThirst()
@@ -101,21 +179,41 @@ public class Player : MonoBehaviour
         if (thirst < 0) thirst = 0.0f;
 
         float newEmissionRate = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 0.0f, 10.0f);
-        ParticleSystem.EmissionModule em = sweatParticles.emission;
-        em.rateOverTime = newEmissionRate;
+        ParticleSystem.EmissionModule pSweatEmission = sweatParticles.emission;
+        pSweatEmission.rateOverTime = newEmissionRate;
 
         float fillAmount = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 1.0f, 0.0f);
-        thirstImage.fillAmount = fillAmount;
+        thirstBar.fillAmount = fillAmount;
 
         if (thirst >= midThirst)
         {
             moveSpeed = 3.0f;
             footprintCounterInterval = 20;
+
+            // breathless particles
+            breathParticlesLess.gameObject.SetActive(false);
+            breathParticlesMore.gameObject.SetActive(true);
+
+            // slower animation
+            animator.speed = 0.5f;
+
+            // flash thirstbar
+            flashCounter = (flashCounter + 1) % flashCounterInterval;
+            if (flashCounter == flashCounterInterval - 1)
+                thirstBar.enabled = true;
+            else if (flashCounter == (flashCounterInterval / 2) - 1)
+                thirstBar.enabled = false;
+
         }
         else if (thirst < midThirst)
         {
             moveSpeed = 6.0f;
             footprintCounterInterval = 20;
+
+            breathParticlesLess.gameObject.SetActive(true);
+            breathParticlesMore.gameObject.SetActive(false);
+
+            animator.speed = 1.0f;
         }
     }
 
@@ -123,8 +221,14 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Pool"))
         {
-            bCouldRefill = true;
-            refillText.SetActive(true);
+            foreach (Transform child in inventory.slots[selectedSlot].transform)
+            {
+                if (child.CompareTag("Bottle"))
+                {
+                    bCouldRefill = true;
+                    refillText.SetActive(true);
+                }
+            }
         }
         else if (other.CompareTag("Pickup"))
         {
@@ -208,9 +312,7 @@ public class Player : MonoBehaviour
             if (footprintCounter == footprintCounterInterval - 1)
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(-0.185f, 0, 0));
             else if (footprintCounter == (footprintCounterInterval / 2) - 1)
-            {
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(0.185f, 0, 0));
-            }
         }
 
     }
