@@ -101,6 +101,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(t);
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
+
     public IEnumerator ResetGame()
     {
         yield return new WaitForSeconds(5.0f);
