@@ -57,10 +57,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        cameraMovement.enabled = bCanMove;
+
         if (bCanMove)
         {
-            cameraMovement.enabled = true;
-
             UpdateStats();
 
             SelectInventorySlot(Input.mouseScrollDelta.y);
