@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -13,6 +14,8 @@ public class Player : MonoBehaviour
     public Transform cameraTransform;
     public float moveSpeed;
     private bool bDead;
+    public bool bCanMove;
+    public CinemachineBrain cameraMovement;
 
     [Header("Inventory")]
     private int selectedSlot = 0;
@@ -45,7 +48,8 @@ public class Player : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         inventory = GetComponent<Inventory>();
-        
+
+        cameraMovement.enabled = false;
 
         health = maxHealth;
         thirst = 0;
@@ -53,11 +57,25 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        UpdateStats();
+        if (bCanMove)
+        {
+            cameraMovement.enabled = true;
 
-        SelectInventorySlot(Input.mouseScrollDelta.y);
-        UseInventory();
+            UpdateStats();
+
+            SelectInventorySlot(Input.mouseScrollDelta.y);
+            UseInventory();
+        }
     }
+
+    void FixedUpdate()
+    {
+        if (bCanMove)
+        {
+            MovePlayer();
+        }
+    }
+
 
     private void UpdateStats()
     {
@@ -169,10 +187,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        MovePlayer();
-    }
 
     void MovePlayer()
     {
