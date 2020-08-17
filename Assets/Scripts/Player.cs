@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     public LoadScene gameManager;
     public GameObject resetPanel;
     public LightBob lightBob;
+    private bool bAlreadyZoomed = true;
 
     [Header("Effects")]
     public ParticleSystem sweatParticles;
@@ -57,7 +58,7 @@ public class Player : MonoBehaviour
     public float health, thirst;
     public Image thirstBar;
     private int flashCounter = 0;
-    private int flashCounterInterval = 10;
+    private int flashCounterInterval = 20;
 
 
     private void Awake()
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
         // triggers once when player movement is enabled
         if (bCanMove && !bAlreadyMoved)
         {
-            StartCoroutine(FadeFOV(cinemachineFreeLook, 4.0f, 45.0f));
+            StartCoroutine(ZoomFOV(cinemachineFreeLook, 4.0f, 45.0f));
             bAlreadyMoved = true;
         }
 
@@ -115,6 +116,8 @@ public class Player : MonoBehaviour
     {
         Debug.Log("player dead");
 
+        StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
+
         // freeze player
         bDead = true;
         moveSpeed = 0.0f;
@@ -129,9 +132,9 @@ public class Player : MonoBehaviour
         refillText.SetActive(false);
         pickupText.SetActive(false);
 
-        breathParticlesLess.Stop();
-        breathParticlesMore.Stop();
-        sweatParticles.Stop();
+        breathParticlesLess.Pause();
+        breathParticlesMore.Pause();
+        sweatParticles.Pause();
         snowParticles.Pause();
 
         lightBob.period = 0;
@@ -139,9 +142,6 @@ public class Player : MonoBehaviour
         // change sprite
         animator.speed = 1.0f;
         animator.SetBool("Dead", true);
-
-        // zoom camera in
-        StartCoroutine(FadeFOV(cinemachineFreeLook, 2.0f, 35.0f));
 
         // increase volume of breathing
         // decrease volume of everything else
@@ -162,7 +162,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public static IEnumerator FadeFOV(CinemachineFreeLook cam, float duration, float targetFOV)
+    public static IEnumerator ZoomFOV(CinemachineFreeLook cam, float duration, float targetFOV)
     {
         Debug.Log("FadeFOV()");
 
@@ -191,19 +191,21 @@ public class Player : MonoBehaviour
         pSweatEmission.rateOverTime = newEmissionRate;
 
         float fillAmount = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 1.0f, 0.0f);
+        if (fillAmount < 0) fillAmount = 0;
+        else if (fillAmount > 1) fillAmount = 1;
         thirstBar.fillAmount = fillAmount;
 
         if (thirst >= midThirst)
         {
+            // slower animation, speed, footprints
+            animator.speed = 0.5f;
             moveSpeed = 3.0f;
-            footprintCounterInterval = 20;
+            footprintCounterInterval = 100;
 
             // breathless particles
             breathParticlesLess.gameObject.SetActive(false);
             breathParticlesMore.gameObject.SetActive(true);
 
-            // slower animation
-            animator.speed = 0.5f;
 
             // flash thirstbar
             flashCounter = (flashCounter + 1) % flashCounterInterval;
@@ -215,13 +217,13 @@ public class Player : MonoBehaviour
         }
         else if (thirst < midThirst)
         {
+            animator.speed = 1.0f;
             moveSpeed = 6.0f;
-            footprintCounterInterval = 20;
+            footprintCounterInterval = 50;
 
             breathParticlesLess.gameObject.SetActive(true);
             breathParticlesMore.gameObject.SetActive(false);
 
-            animator.speed = 1.0f;
         }
     }
 
