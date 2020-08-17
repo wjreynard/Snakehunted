@@ -271,7 +271,6 @@ public class Player : MonoBehaviour
             breathParticlesLess.gameObject.SetActive(false);
             breathParticlesMore.gameObject.SetActive(true);
 
-
             // flash thirstbar
             flashCounter = (flashCounter + 1) % flashCounterInterval;
             if (flashCounter == flashCounterInterval - 1)
@@ -282,6 +281,7 @@ public class Player : MonoBehaviour
         }
         else if (thirst < midThirst)
         {
+            thirstBar.enabled = true;
             animator.speed = 1.0f;
             moveSpeed = 6.0f;
             footprintCounterInterval = 25;
