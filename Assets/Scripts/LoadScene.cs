@@ -14,7 +14,7 @@ public class LoadScene : MonoBehaviour
     public IEnumerator ILoadByIndex(int sceneIndex)
     {
         objectManager.DisableObjects();
-        yield return new WaitForSeconds(objectManager.objects.Length + 1);
+        yield return new WaitForSeconds(objectManager.objects.Length);  // +1?
         SceneManager.LoadScene(sceneIndex);
     }
 }

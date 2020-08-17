@@ -24,8 +24,11 @@ public class Player : MonoBehaviour
     //public ObjectManager objectManager;
     public LoadScene gameManager;
     public GameObject resetPanel;
+    public GameObject pausePanel;
     public LightBob lightBob;
-    private bool bAlreadyZoomed = true;
+    public GameObject invertFilter;
+    public GameObject HUD;
+    private bool bPaused = false;
 
     [Header("Effects")]
     public ParticleSystem sweatParticles;
@@ -46,7 +49,7 @@ public class Player : MonoBehaviour
     public GameObject footprint;
     public Transform FootprintSpawn;
     private int footprintCounter = 0;
-    private int footprintCounterInterval = 50;
+    private int footprintCounterInterval = 25;
 
     [Space(10)]
     [Header("Stats")]
@@ -74,20 +77,67 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        cinemachineBrain.enabled = bCanMove;
-
-        // triggers once when player movement is enabled
-        if (bCanMove && !bAlreadyMoved)
+        pausePanel.SetActive(bPaused);
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            StartCoroutine(ZoomFOV(cinemachineFreeLook, 4.0f, 45.0f));
-            bAlreadyMoved = true;
+            bPaused = !bPaused;
+
+            if (bPaused) PauseGame(true);
+            else PauseGame(false);
         }
 
-        if (bCanMove)
+        cinemachineBrain.enabled = bCanMove;
+
+        if (!bPaused)
         {
-            UpdateStats();
-            SelectInventorySlot(-Input.mouseScrollDelta.y);
-            UseInventory();
+            // triggers once when player movement is enabled
+            if (bCanMove && !bAlreadyMoved)
+            {
+                StartCoroutine(ZoomFOV(cinemachineFreeLook, 4.0f, 45.0f));
+                bAlreadyMoved = true;
+            }
+
+            if (bCanMove)
+            {
+                UpdateStats();
+                SelectInventorySlot(-Input.mouseScrollDelta.y);
+                UseInventory();
+            }
+        }
+    }
+
+    private void PauseGame(bool pause)
+    {
+        // disable all animations, particles, prompts
+        animator.SetFloat("Velocity", 0.0f);
+        animator.SetBool("Drinking", false);
+        animator.SetBool("WaterEmpty", false);
+        animator.SetBool("Refilling", false);
+
+        refillText.SetActive(false);
+        pickupText.SetActive(false);
+
+        if (pause)
+        {
+            bCanMove = false;
+
+            breathParticlesLess.Pause();
+            breathParticlesMore.Pause();
+            sweatParticles.Pause();
+            snowParticles.Pause();
+
+            lightBob.period = 0;
+        }
+        else
+        {
+            bCanMove = true;
+
+            breathParticlesLess.Play();
+            breathParticlesMore.Play();
+            sweatParticles.Play();
+            snowParticles.Play();
+
+            lightBob.period = 1;
         }
     }
 
@@ -106,21 +156,36 @@ public class Player : MonoBehaviour
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
 
-    public IEnumerator ResetGame()
+    //public IEnumerator IResetGame(int index)
+    //{
+    //    yield return new WaitForSeconds(5.0f);
+    //    gameManager.LoadByIndex(index);
+    //}
+
+    public IEnumerator IShowInvertAndResetPanel()
     {
+        yield return new WaitForSeconds(1.0f);
+        invertFilter.SetActive(true);
+        HUD.SetActive(false);
+        
         yield return new WaitForSeconds(5.0f);
-        gameManager.LoadByIndex(0);
+        resetPanel.SetActive(true);
     }
+    //public IEnumerator IJustDisableObjects(int sceneIndex)
+    //{
+    //    objectManager.DisableObjects();
+    //    yield return new WaitForSeconds(objectManager.objects.Length + 1);
+    //}
 
     private void PlayerDeath()
     {
         Debug.Log("player dead");
 
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
+        StartCoroutine(IShowInvertAndResetPanel());
 
         // freeze player
         bDead = true;
-        moveSpeed = 0.0f;
         bCanMove = false;
 
         // disable all animations, particles, prompts
@@ -146,8 +211,12 @@ public class Player : MonoBehaviour
         // increase volume of breathing
         // decrease volume of everything else
 
-        StartCoroutine(ResetGame());
     }
+
+    //public void ResetGame(int index)
+    //{
+    //    StartCoroutine(IResetGame(index));
+    //}
 
     private void UpdateStats()
     {
@@ -200,7 +269,7 @@ public class Player : MonoBehaviour
             // slower animation, speed, footprints
             animator.speed = 0.5f;
             moveSpeed = 3.0f;
-            footprintCounterInterval = 100;
+            footprintCounterInterval = 50;
 
             // breathless particles
             breathParticlesLess.gameObject.SetActive(false);
@@ -219,7 +288,7 @@ public class Player : MonoBehaviour
         {
             animator.speed = 1.0f;
             moveSpeed = 6.0f;
-            footprintCounterInterval = 50;
+            footprintCounterInterval = 25;
 
             breathParticlesLess.gameObject.SetActive(true);
             breathParticlesMore.gameObject.SetActive(false);
@@ -261,6 +330,11 @@ public class Player : MonoBehaviour
 
     private void SelectInventorySlot(float delta)
     {
+        // cancel any ongoing animations
+        animator.SetBool("Drinking", false);
+        animator.SetBool("WaterEmpty", false);
+        animator.SetBool("Refilling", false);
+
         if (delta > 0 || delta < 0)
         {
             if (delta > 0)
