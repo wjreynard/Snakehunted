@@ -209,11 +209,6 @@ public class Player : MonoBehaviour
 
     }
 
-    //public void ResetGame(int index)
-    //{
-    //    StartCoroutine(IResetGame(index));
-    //}
-
     private void UpdateStats()
     {
         if (!bDead)
