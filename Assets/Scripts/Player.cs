@@ -77,13 +77,16 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        pausePanel.SetActive(bPaused);
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (bAlreadyMoved)
         {
-            bPaused = !bPaused;
+            pausePanel.SetActive(bPaused);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                bPaused = !bPaused;
 
-            if (bPaused) PauseGame(true);
-            else PauseGame(false);
+                if (bPaused) PauseGame(true);
+                else PauseGame(false);
+            }
         }
 
         cinemachineBrain.enabled = bCanMove;
@@ -156,12 +159,6 @@ public class Player : MonoBehaviour
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
 
-    //public IEnumerator IResetGame(int index)
-    //{
-    //    yield return new WaitForSeconds(5.0f);
-    //    gameManager.LoadByIndex(index);
-    //}
-
     public IEnumerator IShowInvertAndResetPanel()
     {
         yield return new WaitForSeconds(1.0f);
@@ -170,12 +167,11 @@ public class Player : MonoBehaviour
         
         yield return new WaitForSeconds(5.0f);
         resetPanel.SetActive(true);
+
+        // unlock cursor
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
-    //public IEnumerator IJustDisableObjects(int sceneIndex)
-    //{
-    //    objectManager.DisableObjects();
-    //    yield return new WaitForSeconds(objectManager.objects.Length + 1);
-    //}
 
     private void PlayerDeath()
     {
