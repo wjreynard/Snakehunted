@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     public GameObject footprint;
     public Transform FootprintSpawn;
     private int footprintCounter = 0;
-    private int footprintCounterInterval = 25;
+    public int footprintCounterInterval = 25;
 
     [Space(10)]
     [Header("Stats")]

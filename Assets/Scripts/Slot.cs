@@ -73,6 +73,7 @@ public class Slot : MonoBehaviour
                     Debug.Log("refill water");
 
                     player.moveSpeed = 0.0f;
+                    // bCanMove = false?
 
                     player.animator.SetBool("Refilling", true);
                     bottle.level += bottle.fillRate * Time.deltaTime;
@@ -82,6 +83,7 @@ public class Slot : MonoBehaviour
                         bottle.level = bottle.maxLevel;
                         player.animator.SetBool("Refilling", false);
                         player.moveSpeed = 6.0f;
+                        player.footprintCounterInterval = 25;
                         return;
                     }
                 }
@@ -89,7 +91,8 @@ public class Slot : MonoBehaviour
                 {
                     Debug.Log("empty water");
 
-                    player.moveSpeed = 1.0f;
+                    player.moveSpeed = 1.5f;
+                    player.footprintCounterInterval = 100;
 
                     bottle.level = 0.0f;
                     player.animator.SetBool("WaterEmpty", true);
@@ -98,7 +101,8 @@ public class Slot : MonoBehaviour
                 {
                     Debug.Log("drink water");
 
-                    player.moveSpeed = 1.0f;
+                    player.moveSpeed = 1.5f;
+                    player.footprintCounterInterval = 100;
 
                     bottle.level -= bottle.drainRate * Time.deltaTime;
 
