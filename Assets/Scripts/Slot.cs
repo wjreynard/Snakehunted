@@ -57,7 +57,6 @@ public class Slot : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
     }
-
     public void UseItem()
     {
         Debug.Log("Slot::UseItem()");
@@ -116,7 +115,14 @@ public class Slot : MonoBehaviour
             }
             else if (child.CompareTag("Berry"))
             {
-                // use berry
+                // increase movement speed
+                player.StartCoroutine(ISprint());
+
+                // play eating sound
+                //...
+
+                // remove berry
+                GameObject.Destroy(child.gameObject);
             }
         }
     }

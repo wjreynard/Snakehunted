@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     public ParticleSystem breathParticlesLess;
     public ParticleSystem breathParticlesMore;
     public ParticleSystem snowParticles;
+    public ParticleSystem runParticles;
 
     [Header("Inventory")]
     private int selectedSlot = 0;
@@ -128,6 +129,7 @@ public class Player : MonoBehaviour
             breathParticlesMore.Pause();
             sweatParticles.Pause();
             snowParticles.Pause();
+            runParticles.Pause();
 
             lightBob.period = 0;
         }
@@ -139,6 +141,7 @@ public class Player : MonoBehaviour
             breathParticlesMore.Play();
             sweatParticles.Play();
             snowParticles.Play();
+            runParticles.Play();
 
             lightBob.period = 1;
         }
@@ -157,6 +160,14 @@ public class Player : MonoBehaviour
         Debug.Log("Started Coroutine at timestamp : " + Time.time);
         yield return new WaitForSeconds(t);
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+    }
+
+    public IEnumerator ISprint()
+    {
+        moveSpeed = 12.0f;
+        runParticles.Play();
+
+        yield return new WaitForSeconds(1.0f);
     }
 
     public IEnumerator IShowInvertAndResetPanel()
