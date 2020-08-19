@@ -9,7 +9,7 @@ public class RandomMaterialOnStart : MonoBehaviour
     void Start()
     {
         int r = Mathf.FloorToInt(Random.Range(0, materials.Length));
-        Debug.Log("RandomMaterialOnStart, r = " + r);
+        //Debug.Log("RandomMaterialOnStart, r = " + r);
         if (r >= materials.Length) r -= 1;
         GetComponent<MeshRenderer>().material = materials[r];
     }
