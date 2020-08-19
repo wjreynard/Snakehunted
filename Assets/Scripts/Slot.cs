@@ -59,8 +59,6 @@ public class Slot : MonoBehaviour
     }
     public void UseItem()
     {
-        Debug.Log("Slot::UseItem()");
-
         foreach (Transform child in transform)
         {
             if (child.CompareTag("Bottle"))
@@ -69,8 +67,6 @@ public class Slot : MonoBehaviour
 
                 if (bottle.level < bottle.maxLevel && player.bCouldRefill)
                 {
-                    Debug.Log("refill water");
-
                     player.moveSpeed = 0.0f;
                     // bCanMove = false?
 
@@ -88,8 +84,6 @@ public class Slot : MonoBehaviour
                 }
                 else if (bottle.level <= 0 && !player.bCouldRefill)
                 {
-                    Debug.Log("empty water");
-
                     player.moveSpeed = player.slowSpeed;
                     player.footprintCounterInterval = player.slowFootprintInterval;
 
@@ -98,8 +92,6 @@ public class Slot : MonoBehaviour
                 }
                 else if (bottle.level > 0 && !player.bCouldRefill)
                 {
-                    Debug.Log("drink water");
-
                     player.moveSpeed = player.slowSpeed;
                     player.footprintCounterInterval = player.slowFootprintInterval;
 

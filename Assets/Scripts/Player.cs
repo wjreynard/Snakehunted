@@ -183,7 +183,6 @@ public class Player : MonoBehaviour
         Debug.Log("Player::ISprint()");
 
         bSprinting = true;
-
         runParticles.Play();
 
         float newEmissionRate = ExtensionMethods.LinearRemap(moveSpeed, 0, 12.0f, 10.0f, 40.0f);
@@ -192,16 +191,9 @@ public class Player : MonoBehaviour
 
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
-
-        Debug.Log(moveSpeed);
-        Debug.Log("Started Coroutine at timestamp : " + Time.time);
         yield return new WaitForSeconds(6.0f);
-        Debug.Log("Finished Coroutine at timestamp : " + Time.time);
 
         runParticles.Stop();
-
-        Debug.Log(moveSpeed);
-
         bSprinting = false;
     }
 
@@ -221,8 +213,6 @@ public class Player : MonoBehaviour
 
     private void PlayerDeath()
     {
-        Debug.Log("player dead");
-
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
         StartCoroutine(IShowInvertAndResetPanel());
 
@@ -386,11 +376,6 @@ public class Player : MonoBehaviour
     private void SelectInventorySlot(float delta)
     {
         inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
-
-        // cancel any ongoing animations
-        //animator.SetBool("Drinking", false);
-        //animator.SetBool("WaterEmpty", false);
-        //animator.SetBool("Refilling", false);
 
         if (delta > 0 || delta < 0)
         {
