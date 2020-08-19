@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     private bool bDead;
     public bool bCanMove = false;
     private bool bAlreadyMoved = false;
+    public bool bSprinting = false;
     public CinemachineBrain cinemachineBrain;
     public CinemachineFreeLook cinemachineFreeLook;
     //public ObjectManager objectManager;
@@ -141,7 +142,7 @@ public class Player : MonoBehaviour
             breathParticlesMore.Play();
             sweatParticles.Play();
             snowParticles.Play();
-            runParticles.Play();
+            //runParticles.Play();
 
             lightBob.period = 1;
         }
@@ -162,12 +163,32 @@ public class Player : MonoBehaviour
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
 
+    public void Sprint()
+    {
+        StartCoroutine(ISprint());
+    }
+
     public IEnumerator ISprint()
     {
+        Debug.Log("Player::ISprint()");
+
         moveSpeed = 12.0f;
+        footprintCounterInterval = 12;
         runParticles.Play();
 
-        yield return new WaitForSeconds(1.0f);
+        float newEmissionRate = ExtensionMethods.LinearRemap(moveSpeed, 0, 12.0f, 10.0f, 40.0f);
+        ParticleSystem.EmissionModule pRunEmission = runParticles.emission;
+        pRunEmission.rateOverTime = newEmissionRate;
+
+        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
+        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
+
+        Debug.Log("Started Coroutine at timestamp : " + Time.time);
+        yield return new WaitForSeconds(6.0f);
+        Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+
+        runParticles.Stop();
+        moveSpeed = 6.0f;
     }
 
     public IEnumerator IShowInvertAndResetPanel()
@@ -362,7 +383,7 @@ public class Player : MonoBehaviour
 
         if (inventory.isFull[selectedSlot])
         {
-            if (Input.GetKey(KeyCode.E))
+            if (Input.GetKey(KeyCode.R))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().UseItem();
             }
@@ -370,7 +391,7 @@ public class Player : MonoBehaviour
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().DropItem();
             }
-            else if (Input.GetKeyUp(KeyCode.E))
+            else if (Input.GetKeyUp(KeyCode.R))
             {
                 inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
             }

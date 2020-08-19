@@ -116,7 +116,7 @@ public class Slot : MonoBehaviour
             else if (child.CompareTag("Berry"))
             {
                 // increase movement speed
-                player.StartCoroutine(ISprint());
+                player.Sprint();
 
                 // play eating sound
                 //...
