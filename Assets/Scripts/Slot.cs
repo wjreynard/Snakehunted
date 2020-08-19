@@ -81,8 +81,8 @@ public class Slot : MonoBehaviour
                     {
                         bottle.level = bottle.maxLevel;
                         player.animator.SetBool("Refilling", false);
-                        player.moveSpeed = 6.0f;
-                        player.footprintCounterInterval = 25;
+                        player.moveSpeed = player.midSpeed;
+                        player.footprintCounterInterval = player.midFootprintInterval;
                         return;
                     }
                 }
@@ -90,8 +90,8 @@ public class Slot : MonoBehaviour
                 {
                     Debug.Log("empty water");
 
-                    player.moveSpeed = 1.5f;
-                    player.footprintCounterInterval = 100;
+                    player.moveSpeed = player.slowSpeed;
+                    player.footprintCounterInterval = player.slowFootprintInterval;
 
                     bottle.level = 0.0f;
                     player.animator.SetBool("WaterEmpty", true);
@@ -100,8 +100,8 @@ public class Slot : MonoBehaviour
                 {
                     Debug.Log("drink water");
 
-                    player.moveSpeed = 1.5f;
-                    player.footprintCounterInterval = 100;
+                    player.moveSpeed = player.slowSpeed;
+                    player.footprintCounterInterval = player.slowFootprintInterval;
 
                     bottle.level -= bottle.drainRate * Time.deltaTime;
 
@@ -115,8 +115,11 @@ public class Slot : MonoBehaviour
             }
             else if (child.CompareTag("Berry"))
             {
-                // increase movement speed
-                player.Sprint();
+                if (!player.bSprinting)
+                {
+                    // increase movement speed
+                    player.Sprint();
+                }
 
                 // play eating sound
                 //...
@@ -129,7 +132,10 @@ public class Slot : MonoBehaviour
 
     public void StopUsingItem()
     {
-        player.moveSpeed = 6.0f;
+        //player.animator.speed = 1.0f;
+        //player.moveSpeed = 6.0f;
+        //player.footprintCounterInterval = 25;
+
         player.animator.SetBool("Drinking", false);
         player.animator.SetBool("WaterEmpty", false);
         player.animator.SetBool("Refilling", false);

@@ -15,11 +15,7 @@ public class Player : MonoBehaviour
     public Transform cameraTransform;
     public SpriteRenderer playerSprite;
     public Sprite playerFrozenSprite;
-    public float moveSpeed;
     private bool bDead;
-    public bool bCanMove = false;
-    private bool bAlreadyMoved = false;
-    public bool bSprinting = false;
     public CinemachineBrain cinemachineBrain;
     public CinemachineFreeLook cinemachineFreeLook;
     //public ObjectManager objectManager;
@@ -30,6 +26,26 @@ public class Player : MonoBehaviour
     public GameObject invertFilter;
     public GameObject HUD;
     private bool bPaused = false;
+
+    [Header("Movement")]
+    public bool bCanMove = false;
+    private bool bAlreadyMoved = false;
+    public bool bSprinting = false;
+    public float moveSpeed;
+    public float slowSpeed = 1.5f;
+    public float lastSpeed = 3.0f;
+    public float midSpeed = 6.0f;
+    public float maxSpeed = 8.0f;
+
+    [Header("Footprints")]
+    public GameObject footprint;
+    public Transform FootprintSpawn;
+    private int footprintCounter = 0;
+    public int footprintCounterInterval = 25;
+    public int slowFootprintInterval = 100;
+    public int lastFootprintInterval = 50;
+    public int midFootprintInterval = 25;
+    public int maxFootprintInterval = 18;
 
     [Header("Effects")]
     public ParticleSystem sweatParticles;
@@ -46,12 +62,6 @@ public class Player : MonoBehaviour
     public bool bCouldRefill;
     public GameObject pickupText;
     public GameObject refillText;
-
-    [Header("Footprints")]
-    public GameObject footprint;
-    public Transform FootprintSpawn;
-    private int footprintCounter = 0;
-    public int footprintCounterInterval = 25;
 
     [Space(10)]
     [Header("Stats")]
@@ -172,23 +182,27 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Player::ISprint()");
 
-        moveSpeed = 12.0f;
-        footprintCounterInterval = 12;
+        bSprinting = true;
+
         runParticles.Play();
 
         float newEmissionRate = ExtensionMethods.LinearRemap(moveSpeed, 0, 12.0f, 10.0f, 40.0f);
         ParticleSystem.EmissionModule pRunEmission = runParticles.emission;
         pRunEmission.rateOverTime = newEmissionRate;
 
-        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
-        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
+        StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
+        StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
 
+        Debug.Log(moveSpeed);
         Debug.Log("Started Coroutine at timestamp : " + Time.time);
         yield return new WaitForSeconds(6.0f);
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
 
         runParticles.Stop();
-        moveSpeed = 6.0f;
+
+        Debug.Log(moveSpeed);
+
+        bSprinting = false;
     }
 
     public IEnumerator IShowInvertAndResetPanel()
@@ -289,10 +303,19 @@ public class Player : MonoBehaviour
 
         if (thirst >= midThirst)
         {
-            // slower animation, speed, footprints
-            animator.speed = 0.5f;
-            moveSpeed = 3.0f;
-            footprintCounterInterval = 50;
+            if (!bSprinting)
+            {
+                // slower animation, speed, footprints
+                animator.speed = 0.5f;
+                moveSpeed = slowSpeed;
+                footprintCounterInterval = slowFootprintInterval;
+            }
+            else
+            {
+                animator.speed = 1.0f;
+                moveSpeed = midSpeed;
+                footprintCounterInterval = midFootprintInterval;
+            }
 
             // breathless particles
             breathParticlesLess.gameObject.SetActive(false);
@@ -304,14 +327,23 @@ public class Player : MonoBehaviour
                 thirstBar.enabled = true;
             else if (flashCounter == (flashCounterInterval / 2) - 1)
                 thirstBar.enabled = false;
-
         }
         else if (thirst < midThirst)
         {
             thirstBar.enabled = true;
-            animator.speed = 1.0f;
-            moveSpeed = 6.0f;
-            footprintCounterInterval = 25;
+
+            if (!bSprinting)
+            {
+                animator.speed = 1.0f;
+                moveSpeed = midSpeed;
+                footprintCounterInterval = midFootprintInterval;
+            }
+            else
+            {
+                animator.speed = 1.333f;
+                moveSpeed = maxSpeed;
+                footprintCounterInterval = maxFootprintInterval;
+            }
 
             breathParticlesLess.gameObject.SetActive(true);
             breathParticlesMore.gameObject.SetActive(false);
@@ -353,10 +385,12 @@ public class Player : MonoBehaviour
 
     private void SelectInventorySlot(float delta)
     {
+        inventory.slots[selectedSlot].GetComponent<Slot>().StopUsingItem();
+
         // cancel any ongoing animations
-        animator.SetBool("Drinking", false);
-        animator.SetBool("WaterEmpty", false);
-        animator.SetBool("Refilling", false);
+        //animator.SetBool("Drinking", false);
+        //animator.SetBool("WaterEmpty", false);
+        //animator.SetBool("Refilling", false);
 
         if (delta > 0 || delta < 0)
         {
