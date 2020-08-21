@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     public bool bPlacingStone = false;
     public GameObject stonePrefab;
     public Transform stoneHolder;
+    public ObjectManager objectManager;
 
     [Header("Movement")]
     public bool bCanMove = false;
@@ -128,7 +129,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void PauseGame(bool pause)
+    private void PauseGame(bool bPause)
     {
         // disable all animations, particles, prompts
         animator.SetFloat("Velocity", 0.0f);
@@ -139,33 +140,37 @@ public class Player : MonoBehaviour
         refillText.SetActive(false);
         pickupText.SetActive(false);
 
-        if (pause)
+        if (bPause)
         {
-            Time.timeScale = 0;
+            //Time.timeScale = 0;
 
-            //bCanMove = false;
+            HUD.SetActive(false);
 
-            //breathParticlesLess.Pause();
-            //breathParticlesMore.Pause();
-            //sweatParticles.Pause();
-            //snowParticles.Pause();
-            //runParticles.Pause();
+            bCanMove = false;
 
-            //lightBob.period = 0;
+            breathParticlesLess.Pause();
+            breathParticlesMore.Pause();
+            sweatParticles.Pause();
+            snowParticles.Pause();
+            runParticles.Pause();
+
+            lightBob.period = 0;
         }
         else
         {
-            Time.timeScale = 1;
+            //Time.timeScale = 1;
 
-            //bCanMove = true;
+            HUD.SetActive(true);
 
-            //breathParticlesLess.Play();
-            //breathParticlesMore.Play();
-            //sweatParticles.Play();
-            //snowParticles.Play();
-            ////runParticles.Play();
+            bCanMove = true;
 
-            //lightBob.period = 1;
+            breathParticlesLess.Play();
+            breathParticlesMore.Play();
+            sweatParticles.Play();
+            snowParticles.Play();
+            //runParticles.Play();
+
+            lightBob.period = 1;
         }
     }
 
@@ -208,24 +213,32 @@ public class Player : MonoBehaviour
         bSprinting = false;
     }
 
-    public IEnumerator IShowInvertAndResetPanel()
+    public IEnumerator IShowResetPanel(bool bEnd)
     {
         yield return new WaitForSeconds(1.0f);
-        invertFilter.SetActive(true);
+        invertFilter.SetActive(bEnd);
         HUD.SetActive(false);
-        
+
+        // wait, disable objects then show reset panel
         yield return new WaitForSeconds(5.0f);
+        objectManager.DisableObjects();
+        yield return new WaitForSeconds(objectManager.objects.Length);
+        invertFilter.SetActive(false);
         resetPanel.SetActive(true);
+
+        // wait then show reset panel
+        //yield return new WaitForSeconds(6.0f);
+        //resetPanel.SetActive(true);
 
         // unlock cursor
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    private void PlayerDeath()
+    private void PlayerDeath(bool bEnd)
     {
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
-        StartCoroutine(IShowInvertAndResetPanel());
+        StartCoroutine(IShowResetPanel(bEnd));
 
         // freeze player
         bDead = true;
@@ -265,7 +278,7 @@ public class Player : MonoBehaviour
 
         if (thirst >= maxThirst)
         {
-            PlayerDeath();
+            PlayerDeath(true);
         }
     }
 
@@ -308,8 +321,8 @@ public class Player : MonoBehaviour
             {
                 // slower animation, speed, footprints
                 animator.speed = 0.5f;
-                moveSpeed = slowSpeed;
-                footprintCounterInterval = slowFootprintInterval;
+                moveSpeed = lastSpeed;
+                footprintCounterInterval = lastFootprintInterval;
             }
             else
             {
@@ -389,7 +402,7 @@ public class Player : MonoBehaviour
 
         yield return new WaitForSeconds(5.0f);
 
-        PlayerDeath();
+        PlayerDeath(false);
     }
 
 
