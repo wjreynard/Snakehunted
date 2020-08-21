@@ -26,6 +26,9 @@ public class Player : MonoBehaviour
     public GameObject invertFilter;
     public GameObject HUD;
     private bool bPaused = false;
+    public bool bPlacingStone = false;
+    public GameObject stonePrefab;
+    public Transform stoneHolder;
 
     [Header("Movement")]
     public bool bCanMove = false;
@@ -62,6 +65,7 @@ public class Player : MonoBehaviour
     public bool bCouldRefill;
     public GameObject pickupText;
     public GameObject refillText;
+    public GameObject stoneText;
 
     [Space(10)]
     [Header("Stats")]
@@ -134,27 +138,31 @@ public class Player : MonoBehaviour
 
         if (pause)
         {
-            bCanMove = false;
+            Time.timeScale = 0;
 
-            breathParticlesLess.Pause();
-            breathParticlesMore.Pause();
-            sweatParticles.Pause();
-            snowParticles.Pause();
-            runParticles.Pause();
+            //bCanMove = false;
 
-            lightBob.period = 0;
+            //breathParticlesLess.Pause();
+            //breathParticlesMore.Pause();
+            //sweatParticles.Pause();
+            //snowParticles.Pause();
+            //runParticles.Pause();
+
+            //lightBob.period = 0;
         }
         else
         {
-            bCanMove = true;
+            Time.timeScale = 1;
 
-            breathParticlesLess.Play();
-            breathParticlesMore.Play();
-            sweatParticles.Play();
-            snowParticles.Play();
-            //runParticles.Play();
+            //bCanMove = true;
 
-            lightBob.period = 1;
+            //breathParticlesLess.Play();
+            //breathParticlesMore.Play();
+            //sweatParticles.Play();
+            //snowParticles.Play();
+            ////runParticles.Play();
+
+            //lightBob.period = 1;
         }
     }
 
@@ -341,6 +349,24 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void EndScene()
+    {
+        StartCoroutine(IEndScene());
+    }
+
+    public IEnumerator IEndScene()
+    {
+        // emission rate up: 5 to 15
+        // gravity modifier lower: -0.01 to -0.05
+
+        //float newEmissionRate = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 0.0f, 10.0f);
+        //ParticleSystem.EmissionModule pSweatEmission = sweatParticles.emission;
+        //pSweatEmission.rateOverTime = newEmissionRate;
+
+        yield return new WaitForSeconds(1.0f);
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Pool"))
@@ -358,6 +384,11 @@ public class Player : MonoBehaviour
         {
             pickupText.SetActive(true);
         }
+        else if (other.CompareTag("StoneHolder"))
+        {
+            bPlacingStone = true;
+            stoneText.SetActive(true);
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -370,6 +401,11 @@ public class Player : MonoBehaviour
         else if (other.CompareTag("Pickup"))
         {
             pickupText.SetActive(false);
+        }
+        else if (other.CompareTag("StoneHolder"))
+        {
+            bPlacingStone = false;
+            stoneText.SetActive(false);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -116,13 +117,35 @@ public class Slot : MonoBehaviour
                 // play eating sound
                 //...
 
-                // play animation
-                StartCoroutine(ISetAnimationBool("Eating"));
-
-                // stop animation
-
                 // remove berry
                 GameObject.Destroy(child.gameObject);
+            }
+            else if (child.CompareTag("Stone"))
+            {
+                Debug.Log("using stone");
+
+                // place stone if ready
+                if (player.bPlacingStone)
+                {
+                    // instantiate stone as child of stoneholder
+                    GameObject newItem = Instantiate(player.stonePrefab, player.stoneHolder.position, Quaternion.identity);
+                    newItem.transform.parent = player.stoneHolder.gameObject.transform;
+
+                    // trigger end scene
+                    player.EndScene();
+
+                    // disable text prompt
+                    player.stoneText.SetActive(false);
+
+                    // remove stone
+                    GameObject.Destroy(child.gameObject);
+                }
+                else
+                {
+                    // do nothing?
+                    // play stone shaking animation?
+                }
+
             }
         }
     }

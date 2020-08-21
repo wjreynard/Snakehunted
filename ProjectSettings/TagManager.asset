@@ -8,6 +8,8 @@ TagManager:
   - Berry
   - Pickup
   - Pool
+  - Stone
+  - StoneHolder
   layers:
   - Default
   - TransparentFX
