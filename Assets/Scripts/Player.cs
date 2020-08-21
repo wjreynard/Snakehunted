@@ -100,6 +100,7 @@ public class Player : MonoBehaviour
         if (bAlreadyMoved)
         {
             pausePanel.SetActive(bPaused);
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 bPaused = !bPaused;
@@ -220,7 +221,7 @@ public class Player : MonoBehaviour
         HUD.SetActive(false);
 
         // wait, disable objects then show reset panel
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(6.0f);
         objectManager.DisableObjects();
         yield return new WaitForSeconds(objectManager.objects.Length);
         invertFilter.SetActive(false);
@@ -257,6 +258,11 @@ public class Player : MonoBehaviour
         breathParticlesMore.Stop();
         sweatParticles.Stop();
         snowParticles.Stop();
+
+        snowParticles.Pause();
+        cloudParticles.Pause();
+        swirlParticles1.Pause();
+        swirlParticles2.Pause();
 
         lightBob.period = 0;
 
@@ -389,18 +395,29 @@ public class Player : MonoBehaviour
 
     public IEnumerator IEndScene()
     {
-        snowParticles.Pause();
-
         // emission rate up: 5 to 15
-        StartCoroutine(FadeParticles(cloudParticles, 1.0f, 15.0f));
-        StartCoroutine(FadeParticles(swirlParticles1, 1.0f, 10.0f));
-        StartCoroutine(FadeParticles(swirlParticles2, 1.0f, 10.0f));
+        //StartCoroutine(FadeParticles(cloudParticles, 1.0f, 125.0f));
+        //StartCoroutine(FadeParticles(swirlParticles1, 1.0f, 150.0f));
+        //StartCoroutine(FadeParticles(swirlParticles2, 1.0f, 150.0f));
+
+        ParticleSystem.EmissionModule cloudEmission = cloudParticles.emission;
+        cloudEmission.rateOverTime = 20.0f;
+
+        ParticleSystem.EmissionModule swirlEmission1 = swirlParticles1.emission;
+        swirlEmission1.rateOverTime = 50.0f;
+        //ParticleSystem.ShapeModule swirlShape1 = swirlParticles1.shape;
+        //swirlShape1.radius = 0.01f;
+
+        ParticleSystem.EmissionModule swirlEmission2 = swirlParticles2.emission;
+        swirlEmission2.rateOverTime = 50.0f;
+        //ParticleSystem.ShapeModule swirlShape2 = swirlParticles2.shape;
+        //swirlShape2.radius = 0.01f;
 
         // gravity modifier lower: -0.01 to -0.05
         ParticleSystem.MainModule cloudMain = cloudParticles.main;
         cloudMain.gravityModifier = -0.05f;
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(4.0f);
 
         PlayerDeath(false);
     }
@@ -491,7 +508,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
 
     void MovePlayer()
     {

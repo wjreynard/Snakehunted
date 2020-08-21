@@ -12,6 +12,7 @@ public class Slot : MonoBehaviour
     public GameObject emptyBottleObject;
     public GameObject bottleObject;
     public GameObject berryObject;
+    public GameObject stoneObject;
 
     public int slotPosition;
 
@@ -52,6 +53,10 @@ public class Slot : MonoBehaviour
             else if (child.CompareTag("Berry"))
             {
                 Instantiate(berryObject, player.transform.position, Quaternion.identity);
+            }
+            else if (child.CompareTag("Stone"))
+            {
+                Instantiate(stoneObject, player.transform.position + new Vector3(0, -0.35f, 0), Quaternion.identity);
             }
 
             // destroy sprite

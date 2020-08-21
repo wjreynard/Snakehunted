@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
+    public GameObject pausePanel;
+
     public ObjectManager objectManager;
     public void LoadByIndex(int sceneIndex)
     {
@@ -19,6 +21,8 @@ public class LoadScene : MonoBehaviour
 
     public IEnumerator ILoadByIndex(int sceneIndex)
     {
+        if (pausePanel != null) pausePanel.SetActive(false);
+
         objectManager.DisableObjects();
         yield return new WaitForSeconds(objectManager.objects.Length);  // +1?
         SceneManager.LoadScene(sceneIndex);
