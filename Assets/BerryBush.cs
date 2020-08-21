@@ -30,13 +30,13 @@ public class BerryBush : MonoBehaviour
         newItem.transform.parent = _spawn;
     }
     
-    private IEnumerator IShakeBush()
+    private IEnumerator IShakeBush(float t)
     {
         // play animation, particles
         animator.SetBool("bShaking", true);
         leafParticles.Play();
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(t);
 
         // reset animation, particles
         animator.SetBool("bShaking", false);
@@ -48,7 +48,15 @@ public class BerryBush : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Player shaking bush");
-            StartCoroutine(IShakeBush());
+            StartCoroutine(IShakeBush(1.0f));
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Player shaking bush");
+            StartCoroutine(IShakeBush(0.5f));
         }
     }
 }
