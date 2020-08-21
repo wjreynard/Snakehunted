@@ -56,6 +56,9 @@ public class Player : MonoBehaviour
     public ParticleSystem breathParticlesMore;
     public ParticleSystem snowParticles;
     public ParticleSystem runParticles;
+    public ParticleSystem cloudParticles;
+    public ParticleSystem swirlParticles1;
+    public ParticleSystem swirlParticles2;
 
     [Header("Inventory")]
     private int selectedSlot = 0;
@@ -237,10 +240,10 @@ public class Player : MonoBehaviour
         refillText.SetActive(false);
         pickupText.SetActive(false);
 
-        breathParticlesLess.Pause();
-        breathParticlesMore.Pause();
-        sweatParticles.Pause();
-        snowParticles.Pause();
+        breathParticlesLess.Stop();
+        breathParticlesMore.Stop();
+        sweatParticles.Stop();
+        snowParticles.Stop();
 
         lightBob.period = 0;
 
@@ -354,16 +357,39 @@ public class Player : MonoBehaviour
         StartCoroutine(IEndScene());
     }
 
+    // code from: https://gamedevbeginner.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/
+    public static IEnumerator FadeParticles(ParticleSystem particleSystem, float duration, float targetRate)
+    {
+        ParticleSystem.EmissionModule emissionModule = particleSystem.emission;
+
+        float currentTime = 0;
+        float start = emissionModule.rateOverTime.constant;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            emissionModule.rateOverTime = Mathf.Lerp(start, targetRate, currentTime / duration);
+            yield return null;
+        }
+        yield break;
+    }
+
     public IEnumerator IEndScene()
     {
+        snowParticles.Pause();
+
         // emission rate up: 5 to 15
+        StartCoroutine(FadeParticles(cloudParticles, 1.0f, 15.0f));
+        StartCoroutine(FadeParticles(swirlParticles1, 1.0f, 10.0f));
+        StartCoroutine(FadeParticles(swirlParticles2, 1.0f, 10.0f));
+
         // gravity modifier lower: -0.01 to -0.05
+        ParticleSystem.MainModule cloudMain = cloudParticles.main;
+        cloudMain.gravityModifier = -0.05f;
 
-        //float newEmissionRate = ExtensionMethods.LinearRemap(thirst, 0, maxThirst, 0.0f, 10.0f);
-        //ParticleSystem.EmissionModule pSweatEmission = sweatParticles.emission;
-        //pSweatEmission.rateOverTime = newEmissionRate;
+        yield return new WaitForSeconds(5.0f);
 
-        yield return new WaitForSeconds(1.0f);
+        PlayerDeath();
     }
 
 
