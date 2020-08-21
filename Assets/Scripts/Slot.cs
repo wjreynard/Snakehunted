@@ -116,10 +116,22 @@ public class Slot : MonoBehaviour
                 // play eating sound
                 //...
 
+                // play animation
+                StartCoroutine(ISetAnimationBool("Eating"));
+
+                // stop animation
+
                 // remove berry
                 GameObject.Destroy(child.gameObject);
             }
         }
+    }
+
+    public IEnumerator ISetAnimationBool(string name)
+    {
+        player.animator.SetBool(name, true);
+        yield return new WaitForSeconds(0.5f);
+        player.animator.SetBool(name, false);
     }
 
     public void StopUsingItem()
