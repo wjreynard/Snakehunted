@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class Player : MonoBehaviour
 {
@@ -73,7 +74,6 @@ public class Player : MonoBehaviour
     public GameObject refillText;
     public GameObject stoneText;
 
-    [Space(10)]
     [Header("Stats")]
     public float maxHealth;
     public float maxThirst;
@@ -85,6 +85,7 @@ public class Player : MonoBehaviour
     private int flashCounter = 0;
     private int flashCounterInterval = 20;
 
+    //[Header("Audio")]
 
     private void Awake()
     {
@@ -242,6 +243,9 @@ public class Player : MonoBehaviour
 
     private void PlayerDeath(bool bEnd)
     {
+        // play sound
+        //audioManager.PlaySound("death");
+
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
         StartCoroutine(IShowResetPanel(bEnd));
 
@@ -294,7 +298,7 @@ public class Player : MonoBehaviour
 
     public static IEnumerator ZoomFOV(CinemachineFreeLook cam, float duration, float targetFOV)
     {
-        Debug.Log("FadeFOV()");
+        //Debug.Log("FadeFOV()");
 
         cam.m_CommonLens = true;
 
@@ -547,9 +551,15 @@ public class Player : MonoBehaviour
             // footprints
             footprintCounter = (footprintCounter + 1) % footprintCounterInterval;
             if (footprintCounter == footprintCounterInterval - 1)
+            {
+                //audioManager.PlaySound("footsteps_soft");
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(-0.185f, 0, 0));
+            }
             else if (footprintCounter == (footprintCounterInterval / 2) - 1)
+            {
+                //audioManager.PlaySound("footsteps_soft");
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(0.185f, 0, 0));
+            }
         }
 
         direction *= 0;
