@@ -128,6 +128,8 @@ public class Player : MonoBehaviour
                 UpdateStats();
                 SelectInventorySlot(-Input.mouseScrollDelta.y);
                 UseInventory();
+
+                refillText.SetActive(bCouldRefill);
             }
         }
     }
@@ -208,8 +210,8 @@ public class Player : MonoBehaviour
         ParticleSystem.EmissionModule pRunEmission = runParticles.emission;
         pRunEmission.rateOverTime = newEmissionRate;
 
-        StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
-        StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
+        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 1.0f, 35.0f));
+        //StartCoroutine(ZoomFOV(cinemachineFreeLook, 5.0f, 45.0f));
         yield return new WaitForSeconds(6.0f);
 
         runParticles.Stop();
@@ -419,7 +421,7 @@ public class Player : MonoBehaviour
         ParticleSystem.MainModule cloudMain = cloudParticles.main;
         cloudMain.gravityModifier = -0.05f;
 
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(9.0f);
 
         PlayerDeath(false);
     }
@@ -434,7 +436,6 @@ public class Player : MonoBehaviour
                 if (child.CompareTag("Bottle"))
                 {
                     bCouldRefill = true;
-                    refillText.SetActive(true);
                 }
             }
         }
@@ -446,6 +447,20 @@ public class Player : MonoBehaviour
         {
             bPlacingStone = true;
             stoneText.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Pool"))
+        {
+            foreach (Transform child in inventory.slots[selectedSlot].transform)
+            {
+                if (child.CompareTag("Bottle"))
+                {
+                    bCouldRefill = true;
+                }
+            }
         }
     }
 
