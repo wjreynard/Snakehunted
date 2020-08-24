@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public ObjectManager objectManager;
 
     [Header("Movement")]
+    public Vector3 direction;
     public float gravityModifier;
     public bool bCanMove = false;
     private bool bAlreadyMoved = false;
@@ -515,7 +516,7 @@ public class Player : MonoBehaviour
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
 
-        Vector3 direction = new Vector3(inputX, 0.0f, inputY).normalized;
+        direction = new Vector3(inputX, 0.0f, inputY).normalized;
 
         animator.SetFloat("Velocity", direction.magnitude);
 
@@ -536,6 +537,7 @@ public class Player : MonoBehaviour
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(0.185f, 0, 0));
         }
 
+        direction *= 0;
     }
 
     void SpawnDecal(GameObject prefab, Transform spawn, Vector3 offset)

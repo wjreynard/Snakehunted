@@ -6,7 +6,7 @@ public class Follow : MonoBehaviour
 {
     public Transform target;
     private Vector3 offset;
-    public float smoothSpeed = 2.0f;
+    public float smoothSpeed;
 
     private void Awake()
     {
@@ -25,9 +25,11 @@ public class Follow : MonoBehaviour
 
     private void MoveFollower()
     {
-        Vector3 desiredPosition = target.position + offset;
+        Player player = target.gameObject.GetComponent<Player>();
+        Vector3 projectedDirection = player.direction * player.maxSpeed;
+        Vector3 desiredPosition = target.position + offset + projectedDirection;
         // Vector3.Lerp() from borrowed from: https://www.youtube.com/watch?v=MFQhpwc6cKE
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.time);
         transform.position = smoothedPosition;
     }
 }
