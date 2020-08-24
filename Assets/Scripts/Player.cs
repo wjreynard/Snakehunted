@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public ObjectManager objectManager;
 
     [Header("Movement")]
+    public float gravityModifier;
     public bool bCanMove = false;
     private bool bAlreadyMoved = false;
     public bool bSprinting = false;
@@ -522,7 +523,10 @@ public class Player : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
             Vector3 moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-            controller.Move(moveDirection.normalized * moveSpeed * Time.deltaTime);
+            controller.Move(moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
+
+            Vector3 gravityDirection = Vector3.down * gravityModifier;
+            controller.Move(gravityDirection * Time.fixedDeltaTime);
 
             // footprints
             footprintCounter = (footprintCounter + 1) % footprintCounterInterval;
