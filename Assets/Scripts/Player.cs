@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
 
     [Header("Audio")]
     public AudioManager audioManager_Effects;
+    public AudioManager audioManager_Music;
     enum StateSounds { Soft, Run, Heavy };
     StateSounds stateSound;
 
@@ -206,6 +207,10 @@ public class Player : MonoBehaviour
     {
         // play sound
         audioManager_Effects.Play("Spawn");
+
+        // start music
+        audioManager_Music.Play("Music");
+        audioManager_Music.Play("Amb_Wind");
     }
 
     void FixedUpdate()
