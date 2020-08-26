@@ -5,10 +5,11 @@ public class Pickup : MonoBehaviour
     private Inventory inventory;
     public GameObject itemSprite;
 
-    public AudioManager audioManager_Effects;
+    private AudioManager audioManager_Effects;
 
     private void Awake()
     {
+        audioManager_Effects = GameObject.FindGameObjectWithTag("Audio_Effects").GetComponent<AudioManager>();
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
     }
 
@@ -24,7 +25,7 @@ public class Pickup : MonoBehaviour
         }
     }
 
-private void PickupItem()
+    private void PickupItem()
     {
         // find empty slot
         for (int i = 0; i < inventory.slots.Length; i++)

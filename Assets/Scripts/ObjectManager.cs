@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
+    [Range(.1f, 1f)]
+    public float delay;
+
     public GameObject[] objects;
     public bool bPlayerInScene;
     private GameObject player;
@@ -32,7 +35,7 @@ public class ObjectManager : MonoBehaviour
         {
             objects[i].SetActive(true);
             audioManager_Effects.Play("Misc_Pop");
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(delay);
         }
 
         if (bPlayerInScene)
@@ -47,7 +50,7 @@ public class ObjectManager : MonoBehaviour
         for (int i = objects.Length - 1; i >= 0; i--)
         {
             objects[i].SetActive(false);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(delay);
         }
     }
 

@@ -10,6 +10,7 @@ TagManager:
   - Pool
   - Stone
   - StoneHolder
+  - Audio_Effects
   layers:
   - Default
   - TransparentFX
