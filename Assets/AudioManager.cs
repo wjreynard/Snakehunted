@@ -5,7 +5,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
 
-	public static AudioManager instance;
+	//public static AudioManager instance;
 
 	public AudioMixerGroup mixerGroup;
 
@@ -13,15 +13,15 @@ public class AudioManager : MonoBehaviour
 
 	void Awake()
 	{
-		if (instance != null)
-		{
-			Destroy(gameObject);
-		}
-		else
-		{
-			instance = this;
-			DontDestroyOnLoad(gameObject);
-		}
+		//if (instance != null)
+		//{
+		//	Destroy(gameObject);
+		//}
+		//else
+		//{
+		//	instance = this;
+		//	DontDestroyOnLoad(gameObject);
+		//}
 
 		foreach (Sound s in sounds)
 		{
@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
 
 	public void Play(string sound)
 	{
-		Debug.Log("AudioManager::Play(string)");
+		Debug.Log("AudioManager::Play(string), playing = " + sound);
 
 		Sound s = Array.Find(sounds, item => item.name == sound);
 		if (s == null)

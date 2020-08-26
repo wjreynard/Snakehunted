@@ -9,6 +9,7 @@ public class ObjectManager : MonoBehaviour
     public bool bPlayerInScene;
     private GameObject player;
 
+    public AudioManager audioManager_Effects;
     private void Awake()
     {
         DisableObjectsFast();
@@ -30,6 +31,7 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < objects.Length; i++)
         {
             objects[i].SetActive(true);
+            audioManager_Effects.Play("Misc_Pop");
             yield return new WaitForSeconds(1.0f);
         }
 

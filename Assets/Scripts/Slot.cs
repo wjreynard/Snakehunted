@@ -15,6 +15,7 @@ public class Slot : MonoBehaviour
     public GameObject stoneObject;
 
     public int slotPosition;
+    public AudioManager audioManager_Effects;
 
     private void Awake()
     {
@@ -40,6 +41,9 @@ public class Slot : MonoBehaviour
             {
                 Bottle bottle = child.GetComponent<Bottle>();
 
+                // play sound
+                audioManager_Effects.Play("Bottle_Drop");
+
                 if (bottle.level <= 0.0f)
                 {
                     Instantiate(emptyBottleObject, player.transform.position, Quaternion.identity);
@@ -52,10 +56,16 @@ public class Slot : MonoBehaviour
             }
             else if (child.CompareTag("Berry"))
             {
+                // play sound
+                audioManager_Effects.Play("Berry_Drop");
+
                 Instantiate(berryObject, player.transform.position, Quaternion.identity);
             }
             else if (child.CompareTag("Stone"))
             {
+                // play sound
+                audioManager_Effects.Play("Stone_Drop");
+
                 Instantiate(stoneObject, player.transform.position + new Vector3(0, -0.35f, 0), Quaternion.identity);
             }
 
@@ -73,6 +83,9 @@ public class Slot : MonoBehaviour
 
                 if (bottle.level < bottle.maxLevel && player.bCouldRefill)
                 {
+                    // play sound
+                    audioManager_Effects.Play("Bottle_Refill");
+
                     player.moveSpeed = 0.0f;
                     // bCanMove = false?
 
@@ -90,6 +103,9 @@ public class Slot : MonoBehaviour
                 }
                 else if (bottle.level <= 0 && !player.bCouldRefill)
                 {
+                    // play sound
+                    audioManager_Effects.Play("Bottle_Shake");
+
                     player.moveSpeed = player.slowSpeed;
                     player.footprintCounterInterval = player.slowFootprintInterval;
 
@@ -98,6 +114,9 @@ public class Slot : MonoBehaviour
                 }
                 else if (bottle.level > 0 && !player.bCouldRefill)
                 {
+                    // play sound
+                    audioManager_Effects.Play("Bottle_Drink");
+
                     player.moveSpeed = player.slowSpeed;
                     player.footprintCounterInterval = player.slowFootprintInterval;
 
@@ -119,15 +138,16 @@ public class Slot : MonoBehaviour
                     player.Sprint();
                 }
 
-                // play eating sound
-                //...
+                // play sound
+                audioManager_Effects.Play("Berry_Eat");
 
                 // remove berry
                 GameObject.Destroy(child.gameObject);
             }
             else if (child.CompareTag("Stone"))
             {
-                Debug.Log("using stone");
+                // play sound
+                audioManager_Effects.Play("Stone_Drop");
 
                 // place stone if ready
                 if (player.bPlacingStone)

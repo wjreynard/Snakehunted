@@ -8,6 +8,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using System.Runtime.InteropServices.ComTypes;
 
 public class Player : MonoBehaviour
 {
@@ -85,7 +86,10 @@ public class Player : MonoBehaviour
     private int flashCounter = 0;
     private int flashCounterInterval = 20;
 
-    //[Header("Audio")]
+    [Header("Audio")]
+    public AudioManager audioManager_Effects;
+    enum StateSounds { Soft, Run, Heavy };
+    StateSounds stateSound;
 
     private void Awake()
     {
@@ -131,7 +135,25 @@ public class Player : MonoBehaviour
                 UseInventory();
 
                 refillText.SetActive(bCouldRefill);
+
+                ManageBreath();
             }
+        }
+    }
+
+    private void ManageBreath()
+    {
+        //PlayStateSound(false);
+
+        if (thirst >= midThirst)
+        {
+            breathParticlesLess.gameObject.SetActive(false);
+            breathParticlesMore.gameObject.SetActive(true);
+        } 
+        else if (thirst < midThirst) {
+
+            breathParticlesLess.gameObject.SetActive(true);
+            breathParticlesMore.gameObject.SetActive(false);
         }
     }
 
@@ -178,6 +200,12 @@ public class Player : MonoBehaviour
 
             lightBob.period = 1;
         }
+    }
+
+    private void Start()
+    {
+        // play sound
+        audioManager_Effects.Play("Spawn");
     }
 
     void FixedUpdate()
@@ -244,7 +272,7 @@ public class Player : MonoBehaviour
     private void PlayerDeath(bool bEnd)
     {
         // play sound
-        //audioManager.PlaySound("death");
+        audioManager_Effects.Play("Death");
 
         StartCoroutine(ZoomFOV(cinemachineFreeLook, 2.0f, 35.0f));
         StartCoroutine(IShowResetPanel(bEnd));
@@ -345,10 +373,6 @@ public class Player : MonoBehaviour
                 footprintCounterInterval = midFootprintInterval;
             }
 
-            // breathless particles
-            breathParticlesLess.gameObject.SetActive(false);
-            breathParticlesMore.gameObject.SetActive(true);
-
             // flash thirstbar
             flashCounter = (flashCounter + 1) % flashCounterInterval;
             if (flashCounter == flashCounterInterval - 1)
@@ -372,9 +396,6 @@ public class Player : MonoBehaviour
                 moveSpeed = maxSpeed;
                 footprintCounterInterval = maxFootprintInterval;
             }
-
-            breathParticlesLess.gameObject.SetActive(true);
-            breathParticlesMore.gameObject.SetActive(false);
 
         }
     }
@@ -404,26 +425,24 @@ public class Player : MonoBehaviour
     public IEnumerator IEndScene()
     {
         // emission rate up: 5 to 15
-        //StartCoroutine(FadeParticles(cloudParticles, 1.0f, 125.0f));
-        //StartCoroutine(FadeParticles(swirlParticles1, 1.0f, 150.0f));
-        //StartCoroutine(FadeParticles(swirlParticles2, 1.0f, 150.0f));
-
         ParticleSystem.EmissionModule cloudEmission = cloudParticles.emission;
         cloudEmission.rateOverTime = 20.0f;
 
         ParticleSystem.EmissionModule swirlEmission1 = swirlParticles1.emission;
         swirlEmission1.rateOverTime = 50.0f;
-        //ParticleSystem.ShapeModule swirlShape1 = swirlParticles1.shape;
-        //swirlShape1.radius = 0.01f;
 
         ParticleSystem.EmissionModule swirlEmission2 = swirlParticles2.emission;
         swirlEmission2.rateOverTime = 50.0f;
-        //ParticleSystem.ShapeModule swirlShape2 = swirlParticles2.shape;
-        //swirlShape2.radius = 0.01f;
 
         // gravity modifier lower: -0.01 to -0.05
         ParticleSystem.MainModule cloudMain = cloudParticles.main;
         cloudMain.gravityModifier = -0.05f;
+
+        // play sound
+        audioManager_Effects.Play("End");
+
+        // fade out music
+        // ...
 
         yield return new WaitForSeconds(9.0f);
 
@@ -552,21 +571,59 @@ public class Player : MonoBehaviour
             footprintCounter = (footprintCounter + 1) % footprintCounterInterval;
             if (footprintCounter == footprintCounterInterval - 1)
             {
-                //audioManager.PlaySound("footsteps_soft");
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(-0.185f, 0, 0));
+                PlayStateSound(true);
             }
             else if (footprintCounter == (footprintCounterInterval / 2) - 1)
             {
-                //audioManager.PlaySound("footsteps_soft");
                 SpawnDecal(footprint, FootprintSpawn, new Vector3(0.185f, 0, 0));
+                PlayStateSound(true);
             }
         }
 
         direction *= 0;
     }
 
-    void SpawnDecal(GameObject prefab, Transform spawn, Vector3 offset)
+    private void SpawnDecal(GameObject prefab, Transform spawn, Vector3 offset)
     {
         Instantiate(prefab, spawn.position + offset, Quaternion.Euler(0, animator.gameObject.transform.rotation.y, 0));
+    }
+
+    public void PlayStateSound(bool bFootsteps)
+    {
+        if (bFootsteps)
+        {
+            switch (stateSound)
+            {
+                case StateSounds.Soft:
+                    audioManager_Effects.Play("Footstep_Soft");
+                    break;
+                case StateSounds.Run:
+                    audioManager_Effects.Play("Footstep_Run");
+                    break;
+                case StateSounds.Heavy:
+                    audioManager_Effects.Play("Footstep_Heavy");
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            switch (stateSound)
+            {
+                case StateSounds.Soft:
+                    audioManager_Effects.Play("Breath_Soft");
+                    break;
+                case StateSounds.Run:
+                    audioManager_Effects.Play("Breath_Run");
+                    break;
+                case StateSounds.Heavy:
+                    audioManager_Effects.Play("Breath_Heavy");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
